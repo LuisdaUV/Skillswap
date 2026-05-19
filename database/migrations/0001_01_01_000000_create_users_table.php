@@ -17,6 +17,13 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+
+            //Campos nuevos
+
+            $table->integer('credits')->default(3); 
+            $table->string('university_id')->unique()->nullable();
+
+
             $table->rememberToken();
             $table->timestamps();
         });
