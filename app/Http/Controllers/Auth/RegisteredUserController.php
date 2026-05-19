@@ -30,20 +30,30 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'university_id' => ['required', 'string', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        // 1. Definimos los mensajes PRIMERO
+    $messages = [
+        'password.min' => 'La contraseña es muy corta, pon al menos 8 caracteres.',
+        'password.confirmed' => 'Las contraseñas no coinciden, verifica de nuevo.',
+        'university_id.unique' => 'Esta matrícula ya está registrada en SkillSwap.',
+        'required' => 'Oye, el campo :attribute es obligatorio.',
+    ];
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'university_id' => $request->university_id,
-            'password' => Hash::make($request->password),
-            'credits' => 3,
-        ]);
+    // 2. Ejecutamos la validación pasando los mensajes al final
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+        'university_id' => ['required', 'string', 'max:255', 'unique:'.User::class],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ], $messages); // <--- IMPORTANTE: Poner la variable aquí
+
+    // 3. Si todo está bien, se crea el usuario
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'university_id' => $request->university_id,
+        'password' => Hash::make($request->password),
+        'credits' => 3,
+    ]);
 
         event(new Registered($user));
 
