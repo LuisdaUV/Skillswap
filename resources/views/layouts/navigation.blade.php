@@ -38,6 +38,13 @@
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
+                        <!-- Opción para Mis Habilidades -->
+                        <x-dropdown-link :href="route('skills.create')">
+                            {{ __('Mis Habilidades') }}
+                        </x-dropdown-link>
+
+                        <hr class="my-1">
+
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -45,7 +52,7 @@
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                                {{ __('Cerrar Sesión') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -88,10 +95,21 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
 
+                <x-responsive-nav-link :href="route('profile.edit')">
+                    {{ 'Mi Perfil' }}
+                </x-responsive-nav-link>
+
+                <!-- Agrega esta línea para móvil -->
+                <x-responsive-nav-link :href="route('skills.create')">
+                    {{ 'Mis Habilidades' }}
+                </x-responsive-nav-link>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
                     <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('Cerrar Sesión') }}
                     </x-responsive-nav-link>
                 </form>
             </div>
