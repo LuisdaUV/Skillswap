@@ -35,7 +35,7 @@
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            {{ __('Mi perfil') }}
                         </x-dropdown-link>
 
                         <!-- Opción para Mis Habilidades -->

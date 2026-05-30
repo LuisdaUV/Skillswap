@@ -1,58 +1,83 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+
+    <div class="mb-8">
+        <h2 class="text-5xl font-bold text-gray-800 mb-2">
+            Crear cuenta
+        </h2>
+
+        <p class="text-gray-500">
+            Comparte habilidades y aprende de otros ✨
+        </p>
+    </div>
+
+    <form method="POST" action="{{ route('register') }}" class="space-y-4">
         @csrf
 
-        <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Nombre')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+            <input type="text"
+                   name="name"
+                   placeholder="Nombre completo"
+                   value="{{ old('name') }}"
+                   required
+                   class="w-full px-5 py-4 rounded-2xl border border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 outline-none">
+
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Correo Electrónico')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+        <div>
+            <input type="email"
+                   name="email"
+                   placeholder="Correo institucional"
+                   value="{{ old('email') }}"
+                   required
+                   class="w-full px-5 py-4 rounded-2xl border border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 outline-none">
+
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <div class="mt-4">
-            <x-input-label for="university_id" :value="__('Código Universitario')" />
-            <x-text-input id="university_id" class="block mt-1 w-full" type="text" name="university_id" :value="old('university_id')" required />
+        <div>
+            <input type="text"
+                   name="university_id"
+                   placeholder="Código universitario"
+                   value="{{ old('university_id') }}"
+                   required
+                   class="w-full px-5 py-4 rounded-2xl border border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 outline-none">
+
             <x-input-error :messages="$errors->get('university_id')" class="mt-2" />
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Contraseña')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
+        <div>
+            <input type="password"
+                   name="password"
+                   placeholder="Contraseña"
+                   required
+                   class="w-full px-5 py-4 rounded-2xl border border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 outline-none">
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirmar Contraseña')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        <div>
+            <input type="password"
+                   name="password_confirmation"
+                   placeholder="Confirmar contraseña"
+                   required
+                   class="w-full px-5 py-4 rounded-2xl border border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 outline-none">
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('¿Ya estás registrado?') }}
+        <button type="submit"
+                class="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-2xl font-semibold transition">
+            Registrarse
+        </button>
+
+        <p class="text-center text-gray-600">
+            ¿Ya tienes cuenta?
+
+            <a href="{{ route('login') }}"
+               class="text-purple-600 font-semibold">
+                Inicia sesión
             </a>
+        </p>
 
-            <x-primary-button class="ms-4">
-                {{ __('Registrarse') }}
-            </x-primary-button>
-        </div>
     </form>
+
 </x-guest-layout>

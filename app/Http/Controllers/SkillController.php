@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Skill;
+use Illuminate\Support\Facades\Auth;
 
 class SkillController extends Controller
 {
@@ -13,7 +14,7 @@ class SkillController extends Controller
         return view('skills.create');
     }
 
-    // Guarda la habilidad en la base de datos
+    // Guarda la habilidad y la asocia al usuario
     public function store(Request $request)
     {
         $request->validate([
@@ -24,11 +25,15 @@ class SkillController extends Controller
             'name.unique' => 'Esta habilidad ya existe en la base de datos.',
         ]);
 
-        Skill::create([
+        // Crear la habilidad
+        $skill = Skill::create([
             'name' => $request->name,
             'category' => $request->category,
         ]);
 
-        return redirect()->route('skills.create')->with('success', '¡Habilidad creada con éxito!');
+        // ASOCIAR LA HABILIDAD AL USUARIO ACTUAL
+        Auth::user()->skills()->attach($skill->id, ['level' => 'intermedio']);
+
+        return redirect()->route('skills.create')->with('success', '¡Habilidad creada y agregada a tu perfil!');
     }
 }
