@@ -41,55 +41,30 @@
                 </div>
             </div>
 
-            <!-- Formulario para editar perfil -->
+            <!-- Información de la cuenta (solo lectura) -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">📝 Información de la cuenta</h3>
                     
-                    <form method="post" action="{{ route('profile.update') }}" class="space-y-5">
-                        @csrf
-                        @method('patch')
-
-                        <!-- Nombre -->
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700">Nombre completo</label>
-                            <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}" 
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                            @error('name')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
+                    <div class="space-y-5">
+                        <!-- Nombre (solo lectura) -->
+                        <div class="border-b pb-3">
+                            <label class="block text-sm font-medium text-gray-500">Nombre completo</label>
+                            <p class="mt-1 text-lg font-semibold text-gray-800">{{ $user->name }}</p>
                         </div>
 
-                        <!-- Email -->
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
-                            <input id="email" name="email" type="email" value="{{ old('email', $user->email) }}" 
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                            @error('email')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
+                        <!-- Email (solo lectura) -->
+                        <div class="border-b pb-3">
+                            <label class="block text-sm font-medium text-gray-500">Correo electrónico</label>
+                            <p class="mt-1 text-lg font-semibold text-gray-800">{{ $user->email }}</p>
                         </div>
 
                         <!-- Código de estudiante (solo lectura) -->
                         <div class="bg-gray-50 p-4 rounded-lg">
                             <label class="block text-sm font-medium text-gray-700">🎓 Código de Estudiante</label>
                             <p class="mt-1 text-lg font-semibold text-indigo-600">{{ $user->university_id }}</p>
-                            <p class="text-xs text-gray-400 mt-1">El código de estudiante no puede ser modificado</p>
                         </div>
-
-                        <!-- Botón guardar -->
-                        <div class="flex items-center gap-4 pt-3">
-                            <button type="submit" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 transition font-medium">
-                                💾 Guardar cambios
-                            </button>
-
-                            @if (session('status') === 'profile-updated')
-                                <p class="text-sm text-green-600 bg-green-50 px-3 py-1 rounded">
-                                    ✓ ¡Perfil actualizado!
-                                </p>
-                            @endif
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
 
@@ -111,7 +86,7 @@
                 </div>
             </div>
 
-            <!-- Sección de habilidades del usuario -->
+            <!-- Sección de habilidades del usuario (CORREGIDA - MUESTRA LAS HABILIDADES REALES) -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
@@ -121,26 +96,41 @@
                         </a>
                     </div>
                     
-                    <div class="flex flex-wrap gap-2">
-                        <div class="bg-gray-100 text-gray-500 px-4 py-2 rounded-lg text-sm">
+                    @php
+                        $userSkills = Auth::user()->skills;
+                    @endphp
+                    
+                    @if($userSkills->count() > 0)
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($userSkills as $skill)
+                                <div class="bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-full text-sm flex items-center gap-1">
+                                    <span>{{ $skill->name }}</span>
+                                    <span class="text-xs text-indigo-400">
+                                        ({{ $skill->pivot->level ?? 'intermedio' }})
+                                    </span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="bg-gray-100 text-gray-500 px-4 py-2 rounded-lg text-sm text-center">
                             Aún no tienes habilidades registradas
                         </div>
-                    </div>
+                    @endif
                     
                     <div class="mt-4 text-right">
-                        <a href="{{ route('skills.create') }}" class="text-indigo-500 hover:text-indigo-700 text-sm">
+                        <a href="{{ route('skills.index') }}" class="text-indigo-500 hover:text-indigo-700 text-sm">
                             Administrar habilidades →
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Botón de volver al dashboard -->
+            <!-- Botón de volver al dashboard 
             <div class="text-center">
                 <a href="{{ route('dashboard') }}" class="text-gray-500 hover:text-gray-700 text-sm">
                     ← Volver al Dashboard
                 </a>
-            </div>
+            </div>-->
 
         </div>
     </div>

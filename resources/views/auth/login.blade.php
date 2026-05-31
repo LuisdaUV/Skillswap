@@ -1,85 +1,150 @@
 <x-guest-layout>
+<style>
+.gs-form-title {
+    font-size: 22px;
+    font-weight: 500;
+    color: #e8f5ee;
+    margin: 0 0 4px;
+}
 
-    <div class="mb-8">
-        <h2 class="text-5xl font-bold text-gray-800 mb-2">
-            Iniciar sesión
-        </h2>
+.gs-form-sub {
+    font-size: 13px;
+    color: #6b8c78;
+    margin: 0 0 28px;
+}
 
-        <p class="text-gray-500">
-            Aprende enseñando 🚀
-        </p>
+.gs-field { margin-bottom: 14px; }
+
+.gs-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: #6b8c78;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 6px;
+}
+
+.gs-input {
+    display: block;
+    width: 100%;
+    background: #0f1410;
+    border: 0.5px solid #1e2e22;
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 13px;
+    color: #e8f5ee;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.gs-input::placeholder { color: #3a4e40; }
+.gs-input:focus { border-color: #2de88e; }
+
+.gs-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 12px;
+}
+
+.gs-remember {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #6b8c78;
+    cursor: pointer;
+}
+
+.gs-remember input { accent-color: #2de88e; }
+
+.gs-forgot { color: #6b8c78; text-decoration: none; transition: color 0.15s; }
+.gs-forgot:hover { color: #2de88e; }
+
+.gs-btn {
+    width: 100%;
+    background: #2de88e;
+    color: #0a0f0c;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    margin-bottom: 18px;
+}
+
+.gs-btn:hover { opacity: 0.88; }
+
+.gs-footer-text {
+    text-align: center;
+    font-size: 13px;
+    color: #6b8c78;
+    margin: 0;
+}
+
+.gs-footer-text a { color: #2de88e; text-decoration: none; font-weight: 500; }
+.gs-footer-text a:hover { text-decoration: underline; }
+
+.gs-status {
+    background: #2de88e18;
+    border: 0.5px solid #2de88e40;
+    color: #2de88e;
+    font-size: 12px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 14px;
+}
+
+.gs-error {
+    font-size: 11px;
+    color: #e8836e;
+    margin-top: 4px;
+}
+</style>
+
+<p class="gs-form-title">Iniciar sesión</p>
+<p class="gs-form-sub">Aprende enseñando</p>
+
+<x-auth-session-status :status="session('status')" class="gs-status" />
+
+<form method="POST" action="{{ route('login') }}">
+    @csrf
+
+    <div class="gs-field">
+        <label for="email" class="gs-label">Correo electrónico</label>
+        <input type="email" name="email" id="email"
+            value="{{ old('email') }}" required autocomplete="email"
+            class="gs-input" placeholder="tu@universidad.edu">
+        @error('email') <p class="gs-error">{{ $message }}</p> @enderror
     </div>
 
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <div class="gs-field">
+        <label for="password" class="gs-label">Contraseña</label>
+        <input type="password" name="password" id="password"
+            required autocomplete="current-password"
+            class="gs-input" placeholder="••••••••">
+        @error('password') <p class="gs-error">{{ $message }}</p> @enderror
+    </div>
 
-    <form method="POST" action="{{ route('login') }}" class="space-y-5">
-        @csrf
+    <div class="gs-row">
+        <label class="gs-remember">
+            <input type="checkbox" name="remember">
+            Recordarme
+        </label>
+        @if (Route::has('password.request'))
+            <a href="{{ route('password.request') }}" class="gs-forgot">¿Olvidaste tu contraseña?</a>
+        @endif
+    </div>
 
-        <!-- EMAIL -->
-        <div>
-            <label class="text-gray-700 font-medium">
-                Correo electrónico
-            </label>
+    <button type="submit" class="gs-btn">Ingresar</button>
 
-            <input type="email"
-                   name="email"
-                   value="{{ old('email') }}"
-                   required
-                   class="w-full mt-2 px-5 py-4 rounded-2xl border border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 outline-none transition">
-
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- PASSWORD -->
-        <div>
-            <label class="text-gray-700 font-medium">
-                Contraseña
-            </label>
-
-            <input type="password"
-                   name="password"
-                   required
-                   class="w-full mt-2 px-5 py-4 rounded-2xl border border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 outline-none transition">
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- RECORDAR -->
-        <div class="flex items-center justify-between">
-
-            <label class="flex items-center gap-2 text-gray-600">
-                <input type="checkbox"
-                       name="remember"
-                       class="rounded text-purple-600">
-
-                Recordarme
-            </label>
-
-            @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}"
-                   class="text-purple-600 hover:text-purple-800 text-sm font-medium">
-                    ¿Olvidaste tu contraseña?
-                </a>
-            @endif
-        </div>
-
-        <!-- BOTÓN -->
-        <button type="submit"
-                class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-4 rounded-2xl transition duration-300 shadow-lg hover:shadow-purple-300">
-
-            Ingresar
-        </button>
-
-        <!-- REGISTRO -->
-        <p class="text-center text-gray-600">
-            ¿No tienes cuenta?
-
-            <a href="{{ route('register') }}"
-               class="text-purple-600 font-semibold hover:underline">
-                Regístrate
-            </a>
-        </p>
-
-    </form>
-
+    <p class="gs-footer-text">
+        ¿No tienes cuenta? <a href="{{ route('register') }}">Regístrate</a>
+    </p>
+</form>
 </x-guest-layout>
