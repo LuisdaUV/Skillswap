@@ -119,7 +119,7 @@
         <label for="email" class="gs-label">Correo electrónico</label>
         <input type="email" name="email" id="email"
             value="{{ old('email') }}" required autocomplete="email"
-            class="gs-input" placeholder="tu@universidad.edu">
+            class="gs-input" placeholder="tu@universidad.edu.co">
         @error('email') <p class="gs-error">{{ $message }}</p> @enderror
     </div>
 

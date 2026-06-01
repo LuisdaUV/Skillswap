@@ -1,100 +1,156 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>SkillSwap</title>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <title>{{ config('app.name', 'SkillSwap') }}</title>
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <style>
+            *, *::before, *::after { box-sizing: border-box; }
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+            body {
+                margin: 0;
+                min-height: 100vh;
+                background: #0a0f0c;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Figtree', sans-serif;
+                padding: 24px 16px;
+            }
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+            .gs-wrapper {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                width: 100%;
+                max-width: 920px;
+                min-height: 540px;
+                border-radius: 18px;
+                overflow: hidden;
+                border: 0.5px solid #1e2e22;
+            }
 
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #f3e8ff, #e9d5ff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
+            @media (max-width: 640px) {
+                .gs-wrapper { grid-template-columns: 1fr; }
+                .gs-brand-panel { display: none; }
+            }
 
-        .auth-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            max-width: 1100px;
-            width: 100%;
-            background: white;
-            border-radius: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
+            /* Panel izquierdo con branding */
+            .gs-brand-panel {
+                background: #0f1410;
+                padding: 40px 36px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                border-right: 0.5px solid #1e2e22;
+            }
 
-        .auth-form {
-            padding: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+            .gs-logo {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                text-decoration: none;
+            }
 
-        .auth-image {
-            background: url('{{ asset('images/auth-image.jpg') }}') center/cover no-repeat;
-            position: relative;
-        }
+            .gs-logo img {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 1.5px solid #2de88e;
+            }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 40px;
-        }
+            .gs-logo-text {
+                font-size: 16px;
+                font-weight: 500;
+                color: #e8f5ee;
+            }
 
-        .logo-container img {
-            width: 70px;
-            height: 70px;
-            background: white;
-            border-radius: 50%;
-            padding: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+            .gs-brand-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 
-        .btn-primary {
-            background-color: #8b5cf6;
-            color: white;
-            font-weight: 600;
-            padding: 14px;
-            border-radius: 15px;
-            transition: 0.3s;
-        }
+            .gs-tagline {
+                font-size: 28px;
+                font-weight: 500;
+                color: #2de88e;
+                line-height: 1.25;
+                margin: 0 0 12px;
+            }
 
-        .btn-primary:hover {
-            background-color: #7c3aed;
-            box-shadow: 0 0 15px rgba(139,92,246,0.4);
-        }
-    </style>
-</head>
+            .gs-tagline-sub {
+                font-size: 13px;
+                color: #6b8c78;
+                margin: 0;
+                line-height: 1.6;
+            }
 
-<body>
-    <div class="auth-container">
-        <!-- FORMULARIO -->
-        <div class="auth-form">
-            <div class="logo-container">
-                <img src="{{ asset('images/logo.jpeg') }}" alt="SkillSwap">
-                <div>
-                    <h1 class="text-4xl font-bold text-gray-800">
-                        Skill<span class="text-purple-600">Swap</span>
-                    </h1>
-                    <p class="text-sm text-gray-500">Aprende enseñando 🚀</p>
+            .gs-features {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 32px;
+            }
+
+            .gs-feature {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 13px;
+                color: #6b8c78;
+            }
+
+            .gs-feature-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: #2de88e;
+                flex-shrink: 0;
+            }
+
+            .gs-brand-footer {
+                font-size: 11px;
+                color: #3a4e40;
+            }
+
+            /* Panel derecho con formulario */
+            .gs-form-panel {
+                background: #0a0f0c;
+                padding: 40px 36px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            /* Slots del formulario */
+            {{ $slot }}
+        </style>
+    </head>
+    <body>
+        <div class="gs-wrapper">
+            <div class="gs-brand-panel">
+                <a href="/" class="gs-logo">
+                    <img src="{{ asset('images/logo.jpeg') }}" alt="SkillSwap">
+                    <span class="gs-logo-text">SkillSwap</span>
+                </a>
+
+                <div class="gs-brand-body">
+                    <p class="gs-tagline">Aprende enseñando,<br>enseña aprendiendo.</p>
+                    <p class="gs-tagline-sub">Conecta con compañeros de tu universidad e intercambia habilidades de forma gratuita.</p>
+                    <div class="gs-features">
+                        <div class="gs-feature"><span class="gs-feature-dot"></span> Intercambio de habilidades sin costo</div>
+                        <div class="gs-feature"><span class="gs-feature-dot"></span> Comunidad universitaria verificada</div>
+                        <div class="gs-feature"><span class="gs-feature-dot"></span> Sistema de créditos justo</div>
+                    </div>
                 </div>
+
+                <p class="gs-brand-footer">SkillSwap &copy; {{ date('Y') }}</p>
             </div>
 
-            {{ $slot }}
+            <div class="gs-form-panel">
+                {{ $slot }}
+            </div>
         </div>
-
-        <!-- IMAGEN DE FONDO -->
-        <div class="auth-image"></div>
-    </div>
-</body>
+    </body>
 </html>

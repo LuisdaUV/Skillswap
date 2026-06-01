@@ -1,97 +1,270 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ 'Mis Habilidades' }}
-            </h2>
-            <a href="{{ route('skills.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm hover:bg-indigo-700">
-                + Nueva Habilidad
-            </a>
-        </div>
-    </x-slot>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    
-                    @if(session('success'))
-                        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-                            ✅ {{ session('success') }}
-                        </div>
-                    @endif
+.sk-page { padding: 24px 20px; max-width: 860px; margin: 0 auto; }
 
-                    @if(session('error'))
-                        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                            ❌ {{ session('error') }}
-                        </div>
-                    @endif
+.sk-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
 
-                    @php
-                        $skills = Auth::user()->skills;
-                    @endphp
+.sk-page-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: #2de88e;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-                    @if($skills->count() > 0)
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Habilidad</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nivel</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    @foreach($skills as $skill)
-                                        <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {{ $skill->name }}
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {{ $skill->category ?? '-' }}
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                    @if($skill->pivot->level == 'principiante') bg-green-100 text-green-800
-                                                    @elseif($skill->pivot->level == 'intermedio') bg-blue-100 text-blue-800
-                                                    @elseif($skill->pivot->level == 'avanzado') bg-orange-100 text-orange-800
-                                                    @else bg-purple-100 text-purple-800
-                                                    @endif">
-                                                    {{ ucfirst($skill->pivot->level ?? 'intermedio') }}
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3">
-                                                <a href="{{ route('skills.edit', $skill->id) }}" class="text-indigo-600 hover:text-indigo-900">✏️ Editar</a>
-                                                <form method="POST" action="{{ route('skills.destroy', $skill->id) }}" class="inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-900 ml-3" onclick="return confirm('¿Eliminar {{ $skill->name }} de tus habilidades?')">
-                                                        🗑️ Eliminar
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <div class="text-center py-8">
-                            <p class="text-gray-500">Aún no tienes habilidades registradas</p>
-                            <a href="{{ route('skills.create') }}" class="inline-block mt-3 text-indigo-600 hover:underline">
-                                Agrega tu primera habilidad →
-                            </a>
-                        </div>
-                    @endif
+.sk-btn-new {
+    background: #2de88e;
+    color: #0a0f0c;
+    border: none;
+    border-radius: 9px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.15s;
+}
 
-                    <div class="mt-6 text-center">
-                        <a href="{{ route('dashboard') }}" class="text-gray-500 hover:text-gray-700 text-sm">
-                            ← Volver al Dashboard
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+.sk-btn-new:hover { opacity: 0.88; }
+
+.sk-card {
+    background: #0f1410;
+    border: 0.5px solid #1e2e22;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.sk-alert {
+    border-radius: 9px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin: 16px 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sk-alert-success { background: #2de88e18; border: 0.5px solid #2de88e50; color: #2de88e; }
+.sk-alert-error   { background: #e84b2d18; border: 0.5px solid #e84b2d50; color: #e8836e; }
+
+/* Tabla */
+.sk-table { width: 100%; border-collapse: collapse; }
+
+.sk-table thead tr {
+    border-bottom: 0.5px solid #1e2e22;
+}
+
+.sk-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 500;
+    color: #6b8c78;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.sk-table tbody tr {
+    border-bottom: 0.5px solid #1e2e22;
+    transition: background 0.1s;
+}
+
+.sk-table tbody tr:last-child { border-bottom: none; }
+.sk-table tbody tr:hover { background: #141c17; }
+
+.sk-table td {
+    padding: 13px 16px;
+    font-size: 13px;
+    color: #e8f5ee;
+    vertical-align: middle;
+}
+
+.sk-table td.muted { color: #6b8c78; }
+
+/* Badge de nivel */
+.sk-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.sk-badge-principiante { background: #2de88e18; color: #2de88e; border: 0.5px solid #2de88e40; }
+.sk-badge-intermedio   { background: #3d9be918; color: #3d9be9; border: 0.5px solid #3d9be940; }
+.sk-badge-avanzado     { background: #e8a02d18; color: #e8a02d; border: 0.5px solid #e8a02d40; }
+.sk-badge-experto      { background: #b06de818; color: #b06de8; border: 0.5px solid #b06de840; }
+
+/* Acciones */
+.sk-action-edit {
+    font-size: 12px;
+    color: #6b8c78;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 0.5px solid #1e2e22;
+    transition: all 0.15s;
+}
+
+.sk-action-edit:hover { border-color: #2de88e; color: #2de88e; }
+
+.sk-action-delete {
+    font-size: 12px;
+    color: #6b8c78;
+    background: none;
+    border: 0.5px solid #1e2e22;
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s;
+    margin-left: 6px;
+}
+
+.sk-action-delete:hover { border-color: #e84b2d; color: #e84b2d; }
+
+/* Empty state */
+.sk-empty {
+    padding: 48px 20px;
+    text-align: center;
+}
+
+.sk-empty-icon { font-size: 32px; color: #1e2e22; margin-bottom: 12px; }
+.sk-empty-text { font-size: 14px; color: #6b8c78; margin: 0 0 14px; }
+
+.sk-empty-link {
+    color: #2de88e;
+    text-decoration: none;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sk-empty-link:hover { text-decoration: underline; }
+
+.sk-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #6b8c78;
+    text-decoration: none;
+    margin-top: 16px;
+    transition: color 0.15s;
+}
+
+.sk-back:hover { color: #2de88e; }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+
+<div class="sk-page">
+
+    <div class="sk-header">
+        <p class="sk-page-title">
+            <i class="ti ti-books" aria-hidden="true"></i>
+            Mis habilidades
+        </p>
+        <a href="{{ route('skills.create') }}" class="sk-btn-new">
+            <i class="ti ti-plus" style="font-size:14px" aria-hidden="true"></i>
+            Nueva habilidad
+        </a>
     </div>
+
+    <div class="sk-card">
+
+        @if(session('success'))
+            <div class="sk-alert sk-alert-success">
+                <i class="ti ti-circle-check" style="font-size:15px" aria-hidden="true"></i>
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="sk-alert sk-alert-error">
+                <i class="ti ti-alert-circle" style="font-size:15px" aria-hidden="true"></i>
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @php $skills = Auth::user()->skills; @endphp
+
+        @if($skills->count() > 0)
+            <table class="sk-table">
+                <thead>
+                    <tr>
+                        <th>Habilidad</th>
+                        <th>Categoría</th>
+                        <th>Nivel</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($skills as $skill)
+                        <tr>
+                            <td>{{ $skill->name }}</td>
+                            <td class="muted">{{ $skill->category ?? '—' }}</td>
+                            <td>
+                                <span class="sk-badge sk-badge-{{ $skill->pivot->level ?? 'intermedio' }}">
+                                    {{ ucfirst($skill->pivot->level ?? 'intermedio') }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ route('skills.edit', $skill->id) }}" class="sk-action-edit">
+                                    <i class="ti ti-edit" style="font-size:13px" aria-hidden="true"></i> Editar
+                                </a>
+                                <form method="POST" action="{{ route('skills.destroy', $skill->id) }}" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="sk-action-delete"
+                                        onclick="return confirm('¿Eliminar {{ $skill->name }}?')">
+                                        <i class="ti ti-trash" style="font-size:13px" aria-hidden="true"></i> Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @else
+            <div class="sk-empty">
+                <div class="sk-empty-icon">
+                    <i class="ti ti-books" aria-hidden="true"></i>
+                </div>
+                <p class="sk-empty-text">Aún no tienes habilidades registradas</p>
+                <a href="{{ route('skills.create') }}" class="sk-empty-link">
+                    <i class="ti ti-plus" style="font-size:13px" aria-hidden="true"></i>
+                    Agrega tu primera habilidad
+                </a>
+            </div>
+        @endif
+
+    </div>
+
+    <a href="{{ route('dashboard') }}" class="sk-back">
+        <i class="ti ti-arrow-left" style="font-size:13px" aria-hidden="true"></i> Volver al dashboard
+    </a>
+
+</div>
 </x-app-layout>
