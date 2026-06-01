@@ -1,190 +1,115 @@
 <x-app-layout>
-<style>
-*, *::before, *::after { box-sizing: border-box; }
+    <div class="py-12 min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            
+            @if (session('success'))
+                <div class="mb-6 bg-green-900/50 border border-green-500 text-green-300 px-4 py-3 rounded">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-.sk-page { padding: 24px 20px; max-width: 560px; margin: 0 auto; }
+            @error('name')
+                <div class="mb-6 bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded">
+                    {{ $message }}
+                </div>
+            @enderror
 
-.sk-card {
-    background: #0f1410;
-    border: 0.5px solid #1e2e22;
-    border-radius: 14px;
-    padding: 24px;
-}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-.sk-page-title {
-    font-size: 18px;
-    font-weight: 500;
-    color: #2de88e;
-    margin: 0 0 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+                <div class="bg-[#111312] p-6 rounded-xl border border-gray-800 shadow-xl">
+                    <h3 class="text-[#00e676] text-xl font-bold mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                        Habilidades Disponibles
+                    </h3>
+                    <p class="text-gray-400 text-sm mb-4">Selecciona una habilidad de la comunidad para añadirla a tu perfil.</p>
 
-.sk-page-title i { font-size: 18px; }
+                    <div class="overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
+                        <table class="w-full text-left text-gray-300 text-sm">
+                            <thead class="sticky top-0 bg-[#111312]">
+                                <tr class="border-b border-gray-700 text-gray-400">
+                                    <th class="pb-2 font-medium">Habilidad</th>
+                                    <th class="pb-2 font-medium">Categoría</th>
+                                    <th class="pb-2 font-medium">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($skills as $skill)
+                                <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition-colors">
+                                    <td class="py-3">{{ $skill->name }}</td>
+                                    <td class="py-3 text-xs text-gray-500">{{ $skill->category }}</td>
+                                    <td class="py-3">
+                                        <form action="{{ route('user.skills.attach') }}" method="POST" class="flex items-center gap-2">
+                                            @csrf
+                                            <input type="hidden" name="skill_id" value="{{ $skill->id }}">
+                                            
+                                            <select name="level" class="bg-[#1a1d1b] border border-gray-700 text-gray-300 text-xs rounded focus:ring-[#00e676] focus:border-[#00e676] p-1">
+                                                <option value="Principiante">Principiante</option>
+                                                <option value="Intermedio">Intermedio</option>
+                                                <option value="Avanzado">Avanzado</option>
+                                            </select>
+                                            
+                                            <button type="submit" class="text-[#00e676] hover:text-white font-bold text-xs bg-[#00e676]/10 px-2 py-1 rounded transition-colors">
+                                                + Añadir
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="3" class="py-4 text-center text-gray-500">No hay habilidades registradas. ¡Sé el primero en crear una!</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-.sk-alert {
-    border-radius: 9px;
-    padding: 10px 14px;
-    font-size: 13px;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-}
+                <div class="bg-[#111312] p-6 rounded-xl border border-gray-800 shadow-xl h-fit">
+                    <h3 class="text-[#00e676] text-xl font-bold mb-6 flex items-center">
+                        <span class="mr-2">+</span> Añadir nueva habilidad
+                    </h3>
+                    
+                    <form method="POST" action="{{ route('skills.store') }}">
+                        @csrf
+                        
+                        <div class="mb-5">
+                            <label class="block text-xs font-bold text-gray-400 tracking-wider mb-2 uppercase">Nombre de la habilidad *</label>
+                            <input type="text" name="name" required class="w-full bg-[#1a1d1b] border border-gray-700 text-gray-300 rounded-md focus:ring-[#00e676] focus:border-[#00e676] p-3 placeholder-gray-600" placeholder="Ej: Programación, Matemáticas, Inglés...">
+                        </div>
 
-.sk-alert-success { background: #2de88e18; border: 0.5px solid #2de88e50; color: #2de88e; }
-.sk-alert-error   { background: #e84b2d18; border: 0.5px solid #e84b2d50; color: #e8836e; }
-.sk-alert ul { margin: 0; padding-left: 16px; }
+                        <div class="mb-5">
+                            <label class="block text-xs font-bold text-gray-400 tracking-wider mb-2 uppercase">Categoría</label>
+                            <select name="category" class="w-full bg-[#1a1d1b] border border-gray-700 text-gray-300 rounded-md focus:ring-[#00e676] focus:border-[#00e676] p-3">
+                                <option value="Tecnología">Tecnología</option>
+                                <option value="Idiomas">Idiomas</option>
+                                <option value="Ciencias Exactas">Ciencias Exactas</option>
+                                <option value="Artes">Artes</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
 
-.sk-field { margin-bottom: 16px; }
+                        <div class="mb-8">
+                            <label class="block text-xs font-bold text-gray-400 tracking-wider mb-2 uppercase">Tu nivel *</label>
+                            <select name="level" class="w-full bg-[#1a1d1b] border border-gray-700 text-gray-300 rounded-md focus:ring-[#00e676] focus:border-[#00e676] p-3">
+                                <option value="Principiante">Principiante</option>
+                                <option value="Intermedio">Intermedio</option>
+                                <option value="Avanzado">Avanzado</option>
+                            </select>
+                        </div>
 
-.sk-label {
-    display: block;
-    font-size: 11px;
-    font-weight: 500;
-    color: #6b8c78;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-bottom: 6px;
-}
+                        <div class="border-t border-gray-800 pt-5 flex justify-between items-center">
+                            <a href="{{ route('dashboard') }}" class="text-gray-400 hover:text-white text-sm flex items-center transition-colors">
+                                &larr; Cancelar
+                            </a>
+                            <button type="submit" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-2.5 px-6 rounded-md transition-colors flex items-center shadow-[0_0_15px_rgba(0,230,118,0.3)]">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Agregar habilidad
+                            </button>
+                        </div>
+                    </form>
+                </div>
 
-.sk-input, .sk-select {
-    display: block;
-    width: 100%;
-    background: #141c17;
-    border: 0.5px solid #1e2e22;
-    border-radius: 9px;
-    padding: 10px 12px;
-    font-size: 13px;
-    color: #e8f5ee;
-    font-family: inherit;
-    outline: none;
-    transition: border-color 0.15s;
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-.sk-input::placeholder { color: #6b8c78; }
-.sk-input:focus, .sk-select:focus { border-color: #2de88e; }
-
-.sk-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b8c78' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
-
-.sk-select option { background: #141c17; color: #e8f5ee; }
-
-.sk-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 0.5px solid #1e2e22;
-}
-
-.sk-cancel {
-    font-size: 13px;
-    color: #6b8c78;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transition: color 0.15s;
-}
-
-.sk-cancel:hover { color: #e8f5ee; }
-
-.sk-btn {
-    background: #2de88e;
-    color: #0a0f0c;
-    border: none;
-    border-radius: 9px;
-    padding: 9px 18px;
-    font-size: 13px;
-    font-weight: 500;
-    font-family: inherit;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: opacity 0.15s;
-}
-
-.sk-btn:hover { opacity: 0.88; }
-</style>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
-
-<div class="sk-page">
-    <div class="sk-card">
-
-        <p class="sk-page-title">
-            <i class="ti ti-plus" aria-hidden="true"></i>
-            Añadir nueva habilidad
-        </p>
-
-        @if(session('success'))
-            <div class="sk-alert sk-alert-success">
-                <i class="ti ti-circle-check" style="font-size:15px;flex-shrink:0" aria-hidden="true"></i>
-                {{ session('success') }}
             </div>
-        @endif
-
-        @if($errors->any())
-            <div class="sk-alert sk-alert-error">
-                <i class="ti ti-alert-circle" style="font-size:15px;flex-shrink:0" aria-hidden="true"></i>
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form method="POST" action="{{ route('skills.store') }}">
-            @csrf
-
-            <div class="sk-field">
-                <label for="name" class="sk-label">Nombre de la habilidad *</label>
-                <input type="text" name="name" id="name" value="{{ old('name') }}"
-                    class="sk-input"
-                    placeholder="Ej: Programación, Matemáticas, Inglés..." required>
-            </div>
-
-            <div class="sk-field">
-                <label for="category" class="sk-label">Categoría</label>
-                <select name="category" id="category" class="sk-select">
-                    <option value="">Selecciona una categoría</option>
-                    <option value="tecnologia">Tecnología</option>
-                    <option value="idiomas">Idiomas</option>
-                    <option value="ciencias">Ciencias</option>
-                    <option value="arte">Arte y Diseño</option>
-                    <option value="musica">Música</option>
-                    <option value="deporte">Deporte</option>
-                    <option value="otros">Otros</option>
-                </select>
-            </div>
-
-            <div class="sk-field">
-                <label for="level" class="sk-label">Tu nivel *</label>
-                <select name="level" id="level" class="sk-select" required>
-                    <option value="principiante">Principiante</option>
-                    <option value="intermedio">Intermedio</option>
-                    <option value="avanzado">Avanzado</option>
-                    <option value="experto">Experto</option>
-                </select>
-            </div>
-
-            <div class="sk-actions">
-                <a href="{{ route('skills.index') }}" class="sk-cancel">
-                    <i class="ti ti-arrow-left" style="font-size:13px" aria-hidden="true"></i> Cancelar
-                </a>
-                <button type="submit" class="sk-btn">
-                    <i class="ti ti-check" style="font-size:14px" aria-hidden="true"></i>
-                    Agregar habilidad
-                </button>
-            </div>
-        </form>
-
+        </div>
     </div>
-</div>
 </x-app-layout>
