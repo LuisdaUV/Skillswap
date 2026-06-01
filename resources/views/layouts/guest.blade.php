@@ -38,7 +38,6 @@
                 .gs-brand-panel { display: none; }
             }
 
-            /* Panel izquierdo con branding */
             .gs-brand-panel {
                 background: #0f1410;
                 padding: 40px 36px;
@@ -63,11 +62,7 @@
                 border: 1.5px solid #2de88e;
             }
 
-            .gs-logo-text {
-                font-size: 16px;
-                font-weight: 500;
-                color: #e8f5ee;
-            }
+            .gs-logo-text { font-size: 16px; font-weight: 500; color: #e8f5ee; }
 
             .gs-brand-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 
@@ -79,42 +74,16 @@
                 margin: 0 0 12px;
             }
 
-            .gs-tagline-sub {
-                font-size: 13px;
-                color: #6b8c78;
-                margin: 0;
-                line-height: 1.6;
-            }
+            .gs-tagline-sub { font-size: 13px; color: #6b8c78; margin: 0; line-height: 1.6; }
 
-            .gs-features {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                margin-top: 32px;
-            }
+            .gs-features { display: flex; flex-direction: column; gap: 10px; margin-top: 32px; }
 
-            .gs-feature {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                font-size: 13px;
-                color: #6b8c78;
-            }
+            .gs-feature { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #6b8c78; }
 
-            .gs-feature-dot {
-                width: 6px;
-                height: 6px;
-                border-radius: 50%;
-                background: #2de88e;
-                flex-shrink: 0;
-            }
+            .gs-feature-dot { width: 6px; height: 6px; border-radius: 50%; background: #2de88e; flex-shrink: 0; }
 
-            .gs-brand-footer {
-                font-size: 11px;
-                color: #3a4e40;
-            }
+            .gs-brand-footer { font-size: 11px; color: #3a4e40; }
 
-            /* Panel derecho con formulario */
             .gs-form-panel {
                 background: #0a0f0c;
                 padding: 40px 36px;
@@ -122,13 +91,12 @@
                 flex-direction: column;
                 justify-content: center;
             }
-
-            /* Slots del formulario */
-            {{ $slot }}
         </style>
     </head>
     <body>
         <div class="gs-wrapper">
+
+            {{-- Panel izquierdo: branding --}}
             <div class="gs-brand-panel">
                 <a href="/" class="gs-logo">
                     <img src="{{ asset('images/logo.jpeg') }}" alt="SkillSwap">
@@ -148,9 +116,11 @@
                 <p class="gs-brand-footer">SkillSwap &copy; {{ date('Y') }}</p>
             </div>
 
+            {{-- Panel derecho: formulario (login o register) --}}
             <div class="gs-form-panel">
                 {{ $slot }}
             </div>
+
         </div>
     </body>
 </html>
