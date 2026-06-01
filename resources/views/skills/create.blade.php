@@ -46,6 +46,7 @@
                                                 <option value="Principiante">Principiante</option>
                                                 <option value="Intermedio">Intermedio</option>
                                                 <option value="Avanzado">Avanzado</option>
+                                                <option value="Experto">Experto</option>
                                             </select>
                                             
                                             <button type="submit" class="text-[#00e676] hover:text-white font-bold text-xs bg-[#00e676]/10 px-2 py-1 rounded transition-colors">
@@ -95,6 +96,7 @@
                                 <option value="Principiante">Principiante</option>
                                 <option value="Intermedio">Intermedio</option>
                                 <option value="Avanzado">Avanzado</option>
+                                <option value="Experto">Experto</option>
                             </select>
                         </div>
 
