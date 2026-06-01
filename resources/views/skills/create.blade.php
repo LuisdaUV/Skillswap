@@ -72,16 +72,6 @@
                     <form method="POST" action="{{ route('skills.store') }}">
                         @csrf
 
-                        @if ($errors->any())
-                            <div class="mb-4 bg-red-950/80 border border-red-600 text-red-400 p-4 rounded-md text-sm">
-                                <strong class="block mb-1 font-bold">⚠️ Laravel rechazó el formulario por esto:</strong>
-                                <ul class="list-disc list-inside">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
                         
                         <div class="mb-5">
                             <label class="block text-xs font-bold text-gray-400 tracking-wider mb-2 uppercase">Nombre de la habilidad *</label>
