@@ -34,7 +34,7 @@ class SkillController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:skills',
             'category' => 'nullable|string|max:255',
-            'level' => 'required|in:principiante,intermedio,avanzado,experto',
+            'level' => 'required|string|max:255',
         ], [
             'name.required' => 'Debes escribir el nombre de la habilidad.',
             'name.unique' => 'Esta habilidad ya existe en la base de datos.',
@@ -65,7 +65,7 @@ class SkillController extends Controller
     {
         $request->validate([
             'skill_id' => 'required|exists:skills,id',
-            'level' => 'required|string', 
+            'level' => 'required|string|max:255', 
         ]);
 
         $user = Auth::user();
@@ -110,7 +110,7 @@ class SkillController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'level' => 'required|in:principiante,intermedio,avanzado,experto',
+            'level' => 'required|string|max:255',
         ]);
 
         $user = Auth::user();
