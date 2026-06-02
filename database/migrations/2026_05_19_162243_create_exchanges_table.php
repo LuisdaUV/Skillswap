@@ -24,7 +24,8 @@ return new class extends Migration
         // Estado del intercambio (pendiente, aceptado, rechazado)
         $table->string('status')->default('pendiente');
         $table->timestamps();
-
+        $table->date('meet_date')->nullable(); // Guarda el día (AAAA-MM-DD)
+        $table->time('meet_time')->nullable(); // Guarda la hora (HH:MM:SS)ñ
         });
     }
 
