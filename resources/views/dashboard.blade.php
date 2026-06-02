@@ -238,10 +238,12 @@
         .ss-skill-icon i { font-size: 14px; color: #2de88e; }
         .ss-skill-level { margin-left: auto; font-size: 11px; color: #6b8c78; }
 
+        .ss-skill-item { cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; }
+        .ss-skill-item:hover { background: #2de88e; border-color: #2de88e; color: #0a0f0c; }
         .ss-skill-item.highlight { background: #2de88e; border-color: #2de88e; color: #0a0f0c; }
-        .ss-skill-item.highlight .ss-skill-icon { background: #ffffff22; }
-        .ss-skill-item.highlight .ss-skill-icon i { color: #0a0f0c; }
-        .ss-skill-item.highlight .ss-skill-level { color: #0a0f0c99; }
+        .ss-skill-item:hover .ss-skill-icon, .ss-skill-item.highlight .ss-skill-icon { background: #ffffff22; }
+        .ss-skill-item:hover .ss-skill-icon i, .ss-skill-item.highlight .ss-skill-icon i { color: #0a0f0c; }
+        .ss-skill-item:hover .ss-skill-level, .ss-skill-item.highlight .ss-skill-level { color: #0a0f0c99; }
 
         .ss-empty { font-size: 13px; color: #6b8c78; margin: 0 0 8px; }
         .ss-add-link { font-size: 13px; color: #2de88e; text-decoration: none; }
@@ -408,7 +410,7 @@
 
                 @if(Auth::user()->skills->count() > 0)
                     @foreach(Auth::user()->skills as $i => $skill)
-                        <div class="ss-skill-item {{ $i === 0 ? 'highlight' : '' }}">
+                        <div class="ss-skill-item {{ $i === 0 ?  : '' }}"> {{-- despues del ? omití 'highlight' --}} 
                             <div class="ss-skill-icon">
                                 <i class="ti ti-sparkles" aria-hidden="true"></i>
                             </div>
