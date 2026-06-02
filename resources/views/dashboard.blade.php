@@ -424,7 +424,79 @@
                 @endif
             </div>
 
+            {{-- Sección de Solicitudes Recibidas - Integrada en el flujo del Dashboard --}}
+<div style="margin-top: 24px; font-family: system-ui, -apple-system, sans-serif;">
+    <div style="background: #0b0f0c; border: 1px solid #19221b; border-radius: 14px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+        
+        {{-- Cabecera de la Sección --}}
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; border-bottom: 1px solid #19221b; padding-bottom: 12px;">
+            <div style="background: rgba(45, 232, 142, 0.1); width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+                <i class="ti ti-bell-ringing" style="font-size: 16px; color: #2de88e;" aria-hidden="true"></i>
+            </div>
+            <p style="font-size: 14px; font-weight: 600; color: #e2e8f0; margin: 0; letter-spacing: 0.5px;">
+                Solicitudes de intercambio recibidas
+            </p>
+        </div>
+
+        @if($incomingRequests->count() > 0)
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                @foreach($incomingRequests as $request)
+                    <div style="background: #111713; border: 1px solid #1e2a21; border-radius: 12px; padding: 16px;">
+                        
+                        {{-- Datos del Solicitante --}}
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                            <div style="background: #2de88e; color: #0a0f0c; font-weight: 700; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; text-transform: uppercase;">
+                                {{ substr($request->sender->name, 0, 2) }}
+                            </div>
+                            <div>
+                                <p style="font-size: 14px; margin: 0; color: #ffffff; font-weight: 500;">
+                                    <strong style="color: #2de88e; font-weight: 600;">{{ $request->sender->name }}</strong> te propone un trato
+                                </p>
+                                <p style="font-size: 11px; color: #8fa899; margin: 1px 0 0 0; font-family: monospace;">
+                                    Código: {{ $request->sender->university_id }}
+                                </p>
+                            </div>
+                        </div>
+
+                        {{-- Cuadro de la Oferta --}}
+                        <div style="background: #080c09; border-radius: 8px; padding: 12px; margin-bottom: 14px; border-left: 3px solid #2de88e;">
+                            <p style="font-size: 13px; color: #cbd5e1; margin: 0; line-height: 1.5;">
+                                Quiere aprender tu habilidad de <strong style="color: #2de88e; font-weight: 600;">{{ $request->requestedSkill->name }}</strong> 
+                                y te ofrece a cambio su conocimiento en <strong style="color: #3d9be9; font-weight: 600;">{{ $request->offeredSkill->name }}</strong>.
+                            </p>
+                        </div>
+
+                        {{-- Botones de Acción con Rutas Dinámicas --}}
+                        <div style="display: flex; gap: 10px;">
+                            <form action="{{ route('exchanges.accept', $request->id) }}" method="POST" style="flex: 1;">
+                                @csrf
+                                <button type="submit" style="background: #2de88e; color: #0a0f0c; width: 100%; border: none; padding: 8px 14px; border-radius: 6px; font-size: 12.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                    <i class="ti ti-check" style="font-size: 14px; stroke-width: 2.5;"></i> Aceptar
+                                </button>
+                            </form>
+                            
+                            <form action="{{ route('exchanges.reject', $request->id) }}" method="POST" style="flex: 1;">
+                                @csrf
+                                <button type="submit" style="background: transparent; color: #f87171; width: 100%; border: 1px solid rgba(248, 113, 113, 0.3); padding: 8px 14px; border-radius: 6px; font-size: 12.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                    <i class="ti ti-x" style="font-size: 14px; stroke-width: 2.5;"></i> Rechazar
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <div style="text-align: center; padding: 16px 0;">
+                <p style="font-size: 13px; color: #6b8c78; margin: 0;">No tienes solicitudes de intercambio pendientes.</p>
+            </div>
+        @endif
+    </div>
+</div>
+
         </section>
+
+        
 
         {{-- ── COLUMNA DERECHA ── --}}
         <aside class="ss-right">
@@ -441,7 +513,7 @@
                 <div class="ss-bars">
                     @foreach(['L'=>40,'M'=>60,'X'=>50,'J'=>80,'V'=>90,'S'=>70,'D'=>55] as $day => $h)
                         <div class="ss-bar-wrap">
-                            <div class="ss-bar @if($h >= 70) on @endif" style="height: {{ $h }}%"></div>
+                            <div class="ss-bar @if($h >= 70) on @endif" style="height: {{ $h }}%;" ></div>
                             <span class="ss-bar-day">{{ $day }}</span>
                         </div>
                     @endforeach
@@ -462,6 +534,10 @@
                         fill="#0a0f0c" font-family="inherit">60%</text>
                 </svg>
             </div>
+
+            
+
+
 
             <div class="ss-logros-card">
                 <div>

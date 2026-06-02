@@ -41,4 +41,35 @@ class ExchangeController extends Controller
         // 3. Redireccionar a la página anterior con el mensaje de éxito flash
         return back()->with('success', '¡Éxito! Tu solicitud de intercambio ha sido enviada al compañero.');
     }
+
+    /**
+     * Acepta una solicitud de intercambio.
+     */ 
+    public function accept(Exchange $exchange)
+    {        // Validar que el usuario autenticado es el receptor de la solicitud
+        if ($exchange->receiver_id !== Auth::id()) {
+            return back()->with('error', 'No tienes permiso para aceptar esta solicitud de intercambio.');
+        }
+
+        // Actualizar el estado del intercambio a "aceptado"
+        $exchange->status = 'aceptado';
+        $exchange->save();
+        // Aquí podrías agregar lógica adicional, como notificar al remitente o actualizar habilidades
+        return back()->with('success', 'Has aceptado la solicitud de intercambio.');
+    }
+
+    /**
+     * Rechaza una solicitud de intercambio.
+     */
+    public function reject(Exchange $exchange)
+    {        // Validar que el usuario autenticado es el receptor de la solicitud
+        if ($exchange->receiver_id !== Auth::id()) {
+            return back()->with('error', 'No tienes permiso para rechazar esta solicitud de intercambio.');
+        }   
+        // Actualizar el estado del intercambio a "rechazado"
+        $exchange->status = 'rechazado';
+        $exchange->save();
+        // Aquí podrías agregar lógica adicional, como notificar al remitente
+        return back()->with('success', 'Has rechazado la solicitud de intercambio.');
+    }
 }
