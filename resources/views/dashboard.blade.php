@@ -3,19 +3,23 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; }
 
+        html, body { overflow-x: hidden; }
+
         .ss-app {
             display: grid;
             grid-template-columns: 230px 1fr 230px;
             gap: 12px;
-            padding: 20px;
-            min-height: calc(100vh - 60px);
+            padding: 16px;
+            height: calc(100vh - 60px);
+            overflow: hidden;
             align-items: start;
         }
 
-        @media (max-width: 900px) {
-            .ss-app { grid-template-columns: 1fr; }
+        @media (max-width: 768px) {
+            .ss-app { grid-template-columns: 1fr; height: auto; overflow: visible; }
             .ss-right { display: none; }
         }
+
 
         /* ── Sidebar ── */
         .ss-sidebar {
@@ -26,9 +30,13 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
-            position: sticky;
-            top: 20px;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
         }
+
+        .ss-sidebar::-webkit-scrollbar { display: none; }
 
         .ss-brand {
             display: flex;
@@ -36,6 +44,7 @@
             gap: 8px;
             margin-bottom: 16px;
             text-decoration: none;
+            flex-shrink: 0;
         }
 
         .ss-brand img {
@@ -46,11 +55,7 @@
             border: 1.5px solid #2de88e;
         }
 
-        .ss-brand span {
-            font-size: 14px;
-            font-weight: 500;
-            color: #e8f5ee;
-        }
+        .ss-brand span { font-size: 14px; font-weight: 500; color: #e8f5ee; }
 
         .ss-user-card {
             background: #141c17;
@@ -61,6 +66,7 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 12px;
+            flex-shrink: 0;
         }
 
         .ss-avatar {
@@ -98,19 +104,23 @@
             font-family: inherit;
             text-decoration: none;
             transition: background 0.15s, color 0.15s;
+            flex-shrink: 0;
         }
 
         .ss-nav-item:hover { background: #1e2e22; color: #e8f5ee; }
 
-        .ss-nav-item.active {
-            background: #2de88e;
-            color: #0a0f0c;
-            font-weight: 500;
-        }
-
+        .ss-nav-item.active { background: #2de88e; color: #0a0f0c; font-weight: 500; }
         .ss-nav-item.active i { color: #0a0f0c; }
-
         .ss-nav-item i { font-size: 16px; }
+
+        .ss-nav-item.logout:hover { background: #e84b2d18; color: #e8836e; }
+
+        .ss-nav-divider {
+            border: none;
+            border-top: 0.5px solid #1e2e22;
+            margin: 4px 0;
+            flex-shrink: 0;
+        }
 
         .ss-badge-soon {
             margin-left: auto;
@@ -123,7 +133,7 @@
         }
 
         .ss-credits-chip {
-            margin-top: 16px;
+            margin-top: 8px;
             background: #2de88e15;
             border: 0.5px solid #2de88e40;
             border-radius: 10px;
@@ -131,40 +141,34 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
-        .ss-credits-label {
-            font-size: 10px;
-            color: #6b8c78;
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            margin: 0 0 2px;
-        }
-
-        .ss-credits-val {
-            font-size: 22px;
-            font-weight: 500;
-            color: #2de88e;
-            margin: 0;
-        }
+        .ss-credits-label { font-size: 10px; color: #6b8c78; text-transform: uppercase; letter-spacing: 0.07em; margin: 0 0 2px; }
+        .ss-credits-val   { font-size: 22px; font-weight: 500; color: #2de88e; margin: 0; }
 
         /* ── Centro ── */
-        .ss-center { display: flex; flex-direction: column; gap: 12px; }
+        .ss-center {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
+        }
+
+        .ss-center::-webkit-scrollbar { display: none; }
 
         .ss-hero {
             background: #0f1410;
             border: 0.5px solid #1e2e22;
             border-radius: 14px;
             padding: 20px;
+            flex-shrink: 0;
         }
 
-        .ss-hero-greeting {
-            font-size: 22px;
-            font-weight: 500;
-            color: #2de88e;
-            margin: 0 0 4px;
-        }
-
+        .ss-hero-greeting { font-size: 22px; font-weight: 500; color: #2de88e; margin: 0 0 4px; }
         .ss-hero-sub { font-size: 13px; color: #6b8c78; margin: 0 0 16px; }
 
         .ss-search {
@@ -175,6 +179,7 @@
             border: 0.5px solid #1e2e22;
             border-radius: 8px;
             padding: 9px 12px;
+            text-decoration: none;
         }
 
         .ss-search i { font-size: 15px; color: #6b8c78; }
@@ -185,7 +190,7 @@
             border: 0.5px solid #1e2e22;
             border-radius: 14px;
             padding: 16px;
-            flex: 1;
+            flex-shrink: 0;
         }
 
         .ss-section-label {
@@ -201,15 +206,7 @@
             justify-content: space-between;
         }
 
-        .ss-section-label a {
-            font-size: 11px;
-            color: #6b8c78;
-            text-decoration: none;
-            font-weight: 400;
-            text-transform: none;
-            letter-spacing: 0;
-        }
-
+        .ss-section-label a { font-size: 11px; color: #6b8c78; text-decoration: none; font-weight: 400; text-transform: none; letter-spacing: 0; }
         .ss-section-label a:hover { color: #2de88e; }
 
         .ss-skill-item {
@@ -239,41 +236,36 @@
         }
 
         .ss-skill-icon i { font-size: 14px; color: #2de88e; }
-
         .ss-skill-level { margin-left: auto; font-size: 11px; color: #6b8c78; }
 
-        .ss-skill-item.highlight {
-            background: #2de88e;
-            border-color: #2de88e;
-            color: #0a0f0c;
-        }
-
+        .ss-skill-item.highlight { background: #2de88e; border-color: #2de88e; color: #0a0f0c; }
         .ss-skill-item.highlight .ss-skill-icon { background: #ffffff22; }
         .ss-skill-item.highlight .ss-skill-icon i { color: #0a0f0c; }
         .ss-skill-item.highlight .ss-skill-level { color: #0a0f0c99; }
 
-        .ss-empty {
-            font-size: 13px;
-            color: #6b8c78;
-            margin: 0 0 8px;
-        }
-
-        .ss-add-link {
-            font-size: 13px;
-            color: #2de88e;
-            text-decoration: none;
-        }
-
+        .ss-empty { font-size: 13px; color: #6b8c78; margin: 0 0 8px; }
+        .ss-add-link { font-size: 13px; color: #2de88e; text-decoration: none; }
         .ss-add-link:hover { text-decoration: underline; }
 
         /* ── Columna derecha ── */
-        .ss-right { display: flex; flex-direction: column; gap: 12px; position: sticky; top: 20px; }
+        .ss-right {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
+        }
+
+        .ss-right::-webkit-scrollbar { display: none; }
 
         .ss-stats-card {
             background: #0f1410;
             border: 0.5px solid #1e2e22;
             border-radius: 14px;
             padding: 16px;
+            flex-shrink: 0;
         }
 
         .ss-stats-title { font-size: 15px; font-weight: 500; color: #e8f5ee; margin: 0 0 2px; }
@@ -299,27 +291,10 @@
         .ss-activity-label { font-size: 11px; color: #6b8c78; margin: 0 0 8px; }
 
         .ss-bars { display: flex; align-items: flex-end; gap: 5px; height: 80px; }
-
         .ss-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; height: 100%; justify-content: flex-end; }
-
         .ss-bar { width: 100%; border-radius: 4px 4px 0 0; background: #1e2e22; }
         .ss-bar.on { background: #2de88e; }
-
         .ss-bar-day { font-size: 9px; color: #6b8c78; }
-
-        .ss-pending-card {
-            background: #141c17;
-            border: 0.5px solid #1e2e22;
-            border-radius: 14px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            color: #6b8c78;
-        }
-
-        .ss-pending-card i { font-size: 18px; color: #6b8c78; }
 
         .ss-progress-card {
             background: #2de88e;
@@ -328,16 +303,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-shrink: 0;
         }
 
-        .ss-progress-label {
-            font-size: 11px;
-            font-weight: 500;
-            color: #0a0f0c;
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            margin: 0 0 4px;
-        }
+        .ss-progress-label { font-size: 11px; font-weight: 500; color: #0a0f0c; text-transform: uppercase; letter-spacing: 0.07em; margin: 0 0 4px; }
 
         .ss-logros-card {
             background: #141c17;
@@ -347,6 +316,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .ss-logros-label { font-size: 11px; color: #6b8c78; text-transform: uppercase; letter-spacing: 0.07em; margin: 0 0 4px; }
@@ -395,6 +365,8 @@
                 <span class="ss-badge-soon">pronto</span>
             </span>
 
+            <hr class="ss-nav-divider">
+
             <div class="ss-credits-chip">
                 <div>
                     <p class="ss-credits-label">Créditos</p>
@@ -403,9 +375,11 @@
                 <i class="ti ti-coin" style="font-size:24px;color:#2de88e" aria-hidden="true"></i>
             </div>
 
-            <form method="POST" action="{{ route('logout') }}" style="margin-top: 8px;">
+            <hr class="ss-nav-divider">
+
+            <form method="POST" action="{{ route('logout') }}" style="width:100%;flex-shrink:0;">
                 @csrf
-                <button type="submit" class="ss-nav-item" style="width: 100%;">
+                <button type="submit" class="ss-nav-item logout" style="width:100%;">
                     <i class="ti ti-logout" aria-hidden="true"></i> Cerrar sesión
                 </button>
             </form>
@@ -413,43 +387,41 @@
         </aside>
 
         {{-- ── CENTRO ── --}}
-        <section>
-            <div class="ss-center">
+        <section class="ss-center">
 
-                <div class="ss-hero">
-                    <p class="ss-hero-greeting">¡Hola, {{ Auth::user()->name }}!</p>
-                    <p class="ss-hero-sub">Buen día para aprender</p>
-                    <a href="{{ route('search.index') }}" class="ss-search" style="text-decoration:none;">
-                        <i class="ti ti-search" aria-hidden="true"></i>
-                        <span>Buscar habilidades...</span>
-                    </a>
-                </div>
-
-                <div class="ss-skills-card">
-                    <p class="ss-section-label">
-                        <span style="display:flex;align-items:center;gap:6px;">
-                            <i class="ti ti-books" aria-hidden="true"></i> Mis habilidades
-                        </span>
-                        <a href="{{ route('skills.index') }}">Administrar →</a>
-                    </p>
-
-                    @if(Auth::user()->skills->count() > 0)
-                        @foreach(Auth::user()->skills as $i => $skill)
-                            <div class="ss-skill-item {{ $i === 0 ? 'highlight' : '' }}">
-                                <div class="ss-skill-icon">
-                                    <i class="ti ti-sparkles" aria-hidden="true"></i>
-                                </div>
-                                {{ $skill->name }}
-                                <span class="ss-skill-level">{{ $skill->pivot->level }}</span>
-                            </div>
-                        @endforeach
-                    @else
-                        <p class="ss-empty">Aún no tienes habilidades registradas.</p>
-                        <a href="{{ route('skills.create') }}" class="ss-add-link">+ Agregar tu primera habilidad</a>
-                    @endif
-                </div>
-
+            <div class="ss-hero">
+                <p class="ss-hero-greeting">¡Hola, {{ Auth::user()->name }}!</p>
+                <p class="ss-hero-sub">Buen día para aprender</p>
+                <a href="{{ route('search.index') }}" class="ss-search">
+                    <i class="ti ti-search" aria-hidden="true"></i>
+                    <span>Buscar habilidades...</span>
+                </a>
             </div>
+
+            <div class="ss-skills-card">
+                <p class="ss-section-label">
+                    <span style="display:flex;align-items:center;gap:6px;">
+                        <i class="ti ti-books" aria-hidden="true"></i> Mis habilidades
+                    </span>
+                    <a href="{{ route('skills.index') }}">Administrar →</a>
+                </p>
+
+                @if(Auth::user()->skills->count() > 0)
+                    @foreach(Auth::user()->skills as $i => $skill)
+                        <div class="ss-skill-item {{ $i === 0 ? 'highlight' : '' }}">
+                            <div class="ss-skill-icon">
+                                <i class="ti ti-sparkles" aria-hidden="true"></i>
+                            </div>
+                            {{ $skill->name }}
+                            <span class="ss-skill-level">{{ $skill->pivot->level }}</span>
+                        </div>
+                    @endforeach
+                @else
+                    <p class="ss-empty">Aún no tienes habilidades registradas.</p>
+                    <a href="{{ route('skills.create') }}" class="ss-add-link">+ Agregar tu primera habilidad</a>
+                @endif
+            </div>
+
         </section>
 
         {{-- ── COLUMNA DERECHA ── --}}
