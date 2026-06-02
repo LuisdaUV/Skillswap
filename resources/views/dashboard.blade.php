@@ -441,7 +441,7 @@
                 <div class="ss-bars">
                     @foreach(['L'=>40,'M'=>60,'X'=>50,'J'=>80,'V'=>90,'S'=>70,'D'=>55] as $day => $h)
                         <div class="ss-bar-wrap">
-                            <div class="ss-bar {{ $h >= 70 ? 'on' : '' }}" style="height:{{ $h }}%"></div>
+                            <div class="ss-bar @if($h >= 70) on @endif" style="height: {{ $h }}%"></div>
                             <span class="ss-bar-day">{{ $day }}</span>
                         </div>
                     @endforeach
