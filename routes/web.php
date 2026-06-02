@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search.index');
     Route::get('/search/skills', [App\Http\Controllers\SearchController::class, 'searchSkills'])->name('search.skills');
     Route::post('/user/skills', [SkillController::class, 'attachUser'])->name('user.skills.attach');
+    Route::post('/exchanges', [ExchangeController::class, 'store'])->name('exchanges.store');
 });
 
 // ESTA LÍNEA ES LA MÁS IMPORTANTE: Importa Login, Registro, etc.

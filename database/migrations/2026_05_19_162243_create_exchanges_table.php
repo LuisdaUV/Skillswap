@@ -12,13 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('exchanges', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('sender_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('receiver_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('skill_id')->constrained()->cascadeOnDelete();
-            $table->integer('hours');
-            $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
-            $table->timestamps();
+        $table->id();
+        // Usuario que envía (Tú)
+        $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
+        // Usuario que recibe (El compañero)
+        $table->foreignId('receiver_id')->constrained('users')->onDelete('cascade');
+        // Habilidad que quieres aprender
+        $table->foreignId('requested_skill_id')->constrained('skills')->onDelete('cascade');
+        // Habilidad que ofreces a cambio
+        $table->foreignId('offered_skill_id')->constrained('skills')->onDelete('cascade');
+        // Estado del intercambio (pendiente, aceptado, rechazado)
+        $table->string('status')->default('pendiente');
+        $table->timestamps();
+
         });
     }
 
