@@ -14,9 +14,9 @@ class Exchange extends Model
     // Campos que permitimos llenar masivamente
     protected $fillable = [
         'sender_id', 
-        'receiver_id', 
-        'skill_id', 
-        'hours', 
+        'receiver_id',
+        'requested_skill_id',
+        'offered_skill_id',
         'status'
     ];
 
@@ -37,8 +37,13 @@ class Exchange extends Model
     }
 
     // La habilidad que se intercambió
-    public function skill()
+    public function requestedSkill()
     {
-        return $this->belongsTo(Skill::class);
+        return $this->belongsTo(Skill::class, 'requested_skill_id');
+    }
+
+    public function offeredSkill()
+    {
+        return $this->belongsTo(Skill::class, 'offered_skill_id');
     }
 }
