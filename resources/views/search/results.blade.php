@@ -381,6 +381,26 @@
                                             </select>
                                         </div>
 
+                                        {{-- ========================================================================= --}}
+                                        {{-- ¡NUEVO COMPONENTE: FECHA Y HORA DEL ENCUENTRO! --}}
+                                        {{-- ========================================================================= --}}
+                                        <div class="sk-form-group" style="display: flex; gap: 12px; margin-top: 16px;">
+                                            <div style="flex: 1;">
+                                                <label class="sk-label" style="display: block; margin-bottom: 6px;">¿Qué día se reunirán? *</label>
+                                                <input type="date" name="meet_date" required min="{{ date('Y-m-d') }}" class="sk-select"
+                                                       style="width: 100%; color-scheme: dark; padding: 10px;">
+                                            </div>
+                
+                                        <div style="flex: 1;">
+                                         <label class="sk-label" style="display: block; margin-bottom: 6px;">¿A qué hora? *</label>
+                                         <input type="time" name="meet_time" required class="sk-select"
+                                         style="width: 100%; color-scheme: dark; padding: 10px;">
+                                          </div>
+                                         </div>
+                                        {{-- ========================================================================= --}}
+
+
+
                                         <div class="sk-modal-actions">
                                             <button type="button" @click="modalOpen = false" class="sk-btn-cancel">Cancelar</button>
                                             <button type="submit" class="sk-btn-swap" style="width: auto; flex: 1;">Enviar solicitud</button>
