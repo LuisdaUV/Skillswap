@@ -34,8 +34,6 @@ class Exchange extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'meet_date' => 'date',
-        'meet_time' => 'time'
     ];
 
     /**

@@ -27,6 +27,12 @@ class ExchangeController extends Controller
             ],
             'requested_skill_id' => 'required|exists:skills,id',
             'offered_skill_id' => 'required|exists:skills,id',
+
+            'meet_date' => 'required|date|after_or_equal:today',
+            'meet_time' => 'required|date_format:H:i',
+
+
+
         ]);
 
         // 2. Crear el registro del intercambio en la base de datos
@@ -35,6 +41,8 @@ class ExchangeController extends Controller
             'receiver_id'        => $request->receiver_id,
             'requested_skill_id' => $request->requested_skill_id,
             'offered_skill_id'   => $request->offered_skill_id,
+            'meet_date'          => $request->meet_date,
+            'meet_time'          => $request->meet_time,
             'status'             => 'pendiente', // Estado inicial por defecto
         ]);
 

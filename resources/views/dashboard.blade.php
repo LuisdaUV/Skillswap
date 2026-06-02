@@ -464,6 +464,20 @@
                                 Quiere aprender tu habilidad de <strong style="color: #2de88e; font-weight: 600;">{{ $request->requestedSkill->name }}</strong> 
                                 y te ofrece a cambio su conocimiento en <strong style="color: #3d9be9; font-weight: 600;">{{ $request->offeredSkill->name }}</strong>.
                             </p>
+
+                            {{-- ========================================================= --}}
+                            {{-- BLOQUE NUEVO: Mostrar Fecha y Hora --}}
+                            {{-- ========================================================= --}}
+                             @if($request->meet_date && $request->meet_time)
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 13px; color: #8fa899; background: #111713; padding: 8px 12px; border-radius: 6px; border: 1px dashed #1e2a21;">
+                <i class="ti ti-calendar-event" style="color: #2de88e; font-size: 16px;"></i>
+                    <span>Propone el 
+                        <strong style="color: #e2e8f0;">{{ \Carbon\Carbon::parse($request->meet_date)->format('d/m/Y') }}</strong> a las 
+                        <strong style="color: #e2e8f0;">{{ \Carbon\Carbon::parse($request->meet_time)->format('h:i A') }}</strong>
+                    </span>
+                </div>
+    @endif
+    {{-- ========================================================= --}}
                         </div>
 
                         {{-- Botones de Acción con Rutas Dinámicas --}}
