@@ -1,44 +1,57 @@
 <x-app-layout>
 <style>
+/* ── VARIABLES PALETA ACADÉMICA ── */
+:root {
+    --bg-app: #F4F6F8;             /* Gris claro institucional */
+    --bg-surface: #FFFFFF;         /* Blanco puro para tarjetas */
+    --bg-surface-hover: #EBF3FA;   /* Azul ultra claro para hovers */
+    --border-color: #CBD5E1;       /* Bordes nítidos */
+    
+    --navy-dark: #002B49;          /* Azul Marino Profundo */
+    --blue-accent: #005A9C;        /* Azul Institucional */
+    --yellow-gold: #FFC700;        /* Amarillo / Dorado Escolar */
+    --yellow-hover: #E6B200;       /* Hover amarillo */
+    
+    --text-main: #0F172A;          /* Texto principal */
+    --text-muted: #64748B;         /* Texto secundario */
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 
-.sk-page { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+.sk-page { 
+    padding: 24px 20px; 
+    max-width: 900px; 
+    margin: 0 auto; 
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--text-main);
+}
 
-.sk-page-title {
-    font-size: 18px;
-    font-weight: 500;
-    color: #2de88e;
+.sk-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 6px rgba(0, 43, 73, 0.04);
+}
+
+.sk-section-label {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--navy-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     margin: 0 0 16px;
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.sk-card {
-    background: #0f1410;
-    border: 0.5px solid #1e2e22;
-    border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 12px;
-}
-
-.sk-section-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: #2de88e;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin: 0 0 14px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Formulario de búsqueda */
+/* ── FORMULARIO DE BÚSQUEDA ── */
 .sk-search-grid {
     display: grid;
     grid-template-columns: 1fr 1fr auto;
-    gap: 10px;
+    gap: 12px;
     align-items: end;
 }
 
@@ -49,131 +62,153 @@
 .sk-field-label {
     display: block;
     font-size: 11px;
-    font-weight: 500;
-    color: #6b8c78;
+    font-weight: 700;
+    color: var(--navy-dark);
     text-transform: uppercase;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.05em;
     margin-bottom: 6px;
 }
 
 .sk-input, .sk-select {
     display: block;
     width: 100%;
-    background: #141c17;
-    border: 0.5px solid #1e2e22;
-    border-radius: 9px;
-    padding: 10px 12px;
-    font-size: 13px;
-    color: #e8f5ee;
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--text-main);
     font-family: inherit;
     outline: none;
-    transition: border-color 0.15s;
+    transition: all 0.2s ease;
     appearance: none;
     -webkit-appearance: none;
+    box-sizing: border-box;
+    height: 42px;
 }
 
-.sk-input::placeholder { color: #6b8c78; }
-.sk-input:focus, .sk-select:focus { border-color: #2de88e; }
+.sk-input::placeholder { color: #94A3B8; }
+.sk-input:focus, .sk-select:focus { 
+    border-color: var(--blue-accent); 
+    box-shadow: 0 0 0 3px rgba(0, 90, 156, 0.15);
+}
 
 .sk-select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b8c78' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23005A9C' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 32px;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
 }
 
-.sk-select option { background: #141c17; color: #e8f5ee; }
+.sk-select option { background: #FFFFFF; color: var(--text-main); }
 
 .sk-btn {
-    background: #2de88e;
-    color: #0a0f0c;
+    background: var(--yellow-gold);
+    color: var(--navy-dark);
     border: none;
-    border-radius: 9px;
+    border-radius: 8px;
     padding: 10px 20px;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 700;
     font-family: inherit;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     white-space: nowrap;
-    transition: opacity 0.15s;
-    height: 40px;
+    transition: background-color 0.2s ease;
+    height: 42px;
 }
 
-.sk-btn:hover { opacity: 0.88; }
+.sk-btn:hover { background: var(--yellow-hover); }
 
-/* Tags populares */
-.sk-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+/* ── TAGS POPULARES ── */
+.sk-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 
 .sk-tag {
-    background: #141c17;
-    border: 0.5px solid #1e2e22;
-    color: #c8e8d4;
-    font-size: 12px;
-    padding: 5px 12px;
+    background: var(--bg-app);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
     border-radius: 99px;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    transition: border-color 0.15s, color 0.15s;
+    gap: 6px;
+    transition: all 0.2s ease;
 }
 
-.sk-tag:hover { border-color: #2de88e; color: #2de88e; }
-.sk-tag-count { color: #6b8c78; font-size: 11px; }
+.sk-tag:hover { 
+    border-color: var(--blue-accent); 
+    color: var(--blue-accent); 
+    background: var(--bg-surface-hover);
+}
 
-/* Categorías */
+.sk-tag-count { 
+    background: var(--blue-accent); 
+    color: #FFFFFF; 
+    font-size: 11px; 
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 12px;
+}
+
+/* ── CATEGORÍAS ── */
 .sk-cat-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
 }
 
 .sk-cat-item {
-    background: #141c17;
-    border: 0.5px solid #1e2e22;
+    background: var(--bg-app);
+    border: 1px solid var(--border-color);
     border-radius: 10px;
-    padding: 14px 12px;
+    padding: 16px 12px;
     text-align: center;
     text-decoration: none;
     font-size: 13px;
-    color: #6b8c78;
+    font-weight: 600;
+    color: var(--navy-dark);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    transition: border-color 0.15s, color 0.15s;
+    transition: all 0.2s ease;
 }
 
-.sk-cat-item:hover { border-color: #2de88e; color: #2de88e; }
-.sk-cat-item i { font-size: 20px; }
+.sk-cat-item:hover { 
+    border-color: var(--blue-accent); 
+    color: var(--blue-accent); 
+    background: var(--bg-surface-hover);
+    transform: translateY(-2px);
+}
+
+.sk-cat-item i { font-size: 22px; color: var(--blue-accent); }
 </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 
 <div class="sk-page">
 
+    {{-- Encabezado superior --}}
+    <div style="background: var(--navy-dark); border-radius: 12px; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0, 43, 73, 0.08);">
+        <h2 style="color: #FFFFFF; font-size: 16px; font-weight: 800; margin: 0; display: flex; align-items: center; gap: 8px;">
+            <i class="ti ti-search" style="color: var(--yellow-gold); font-size: 20px;"></i> Buscar compañeros
+        </h2>
 
-
-    <div class="bg-[#111312] border border-gray-800 rounded-xl p-3 flex justify-between items-center mb-6 shadow-lg">
-    <h2 class="text-[#00e676] text-base font-bold flex items-center pl-2">
-        <span class="mr-2"></span> Buscar compañeros
-    </h2>
-
-    <a href="{{ route('dashboard') }}" class="border border-gray-700 bg-[#1a1d1b] text-gray-300 hover:text-[#00e676] hover:border-[#00e676] px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center text-xs font-bold shadow-sm mr-1">
-        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-        </svg>
-        Inicio
-    </a>
-</div>
+        <a href="{{ route('dashboard') }}" style="border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.1); color: #FFFFFF; padding: 6px 14px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; transition: all 0.2s ease;">
+            <i class="ti ti-home" style="font-size: 15px;"></i> Inicio
+        </a>
+    </div>
 
     {{-- Formulario --}}
     <div class="sk-card">
         <p class="sk-section-label">
-            <i class="ti ti-filter" aria-hidden="true"></i> Filtrar búsqueda
+            <i class="ti ti-filter" aria-hidden="true" style="color: var(--blue-accent);"></i> Filtrar búsqueda
         </p>
         <form method="GET" action="{{ route('search.skills') }}">
             <div class="sk-search-grid">
@@ -199,7 +234,7 @@
                 </div>
                 <div>
                     <button type="submit" class="sk-btn">
-                        <i class="ti ti-search" style="font-size:14px" aria-hidden="true"></i>
+                        <i class="ti ti-search" style="font-size:16px" aria-hidden="true"></i>
                         Buscar
                     </button>
                 </div>
@@ -210,7 +245,7 @@
     {{-- Habilidades populares --}}
     <div class="sk-card">
         <p class="sk-section-label">
-            <i class="ti ti-trending-up" aria-hidden="true"></i> Habilidades más buscadas
+            <i class="ti ti-trending-up" aria-hidden="true" style="color: var(--blue-accent);"></i> Habilidades más buscadas
         </p>
         <div class="sk-tags">
             @foreach($popularSkills as $skill)
@@ -225,7 +260,7 @@
     {{-- Categorías --}}
     <div class="sk-card">
         <p class="sk-section-label">
-            <i class="ti ti-layout-grid" aria-hidden="true"></i> Explorar por categoría
+            <i class="ti ti-layout-grid" aria-hidden="true" style="color: var(--blue-accent);"></i> Explorar por categoría
         </p>
         <div class="sk-cat-grid">
             <a href="{{ route('search.skills', ['category' => 'tecnologia']) }}" class="sk-cat-item">

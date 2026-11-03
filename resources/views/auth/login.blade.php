@@ -1,109 +1,154 @@
 <x-guest-layout>
 <style>
+/* ── VARIABLES PALETA ACADÉMICA ── */
+:root {
+    --bg-app: #F4F6F8;
+    --bg-surface: #FFFFFF;
+    --navy-dark: #002B49;
+    --blue-accent: #005A9C;
+    --yellow-gold: #FFC700;
+    --yellow-hover: #E6B200;
+    --text-main: #0F172A;
+    --text-muted: #64748B;
+    --border-color: #CBD5E1;
+    --danger: #DC2626;
+    --success-bg: #E0F2FE;
+    --success-text: #005A9C;
+}
+
 .gs-form-title {
-    font-size: 22px;
-    font-weight: 500;
-    color: #e8f5ee;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--navy-dark);
     margin: 0 0 4px;
+    letter-spacing: -0.5px;
 }
 
 .gs-form-sub {
-    font-size: 13px;
-    color: #6b8c78;
-    margin: 0 0 28px;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0 0 24px;
+    font-weight: 500;
 }
 
-.gs-field { margin-bottom: 14px; }
+.gs-field { margin-bottom: 16px; }
 
 .gs-label {
     display: block;
     font-size: 11px;
-    font-weight: 500;
-    color: #6b8c78;
+    font-weight: 700;
+    color: var(--navy-dark);
     text-transform: uppercase;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.05em;
     margin-bottom: 6px;
 }
 
 .gs-input {
     display: block;
     width: 100%;
-    background: #0f1410;
-    border: 0.5px solid #1e2e22;
-    border-radius: 10px;
-    padding: 11px 14px;
-    font-size: 13px;
-    color: #e8f5ee;
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: var(--text-main);
     font-family: inherit;
     outline: none;
-    transition: border-color 0.15s;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
 }
 
-.gs-input::placeholder { color: #3a4e40; }
-.gs-input:focus { border-color: #2de88e; }
+.gs-input::placeholder { color: #94A3B8; }
+
+.gs-input:focus { 
+    border-color: var(--blue-accent); 
+    box-shadow: 0 0 0 3px rgba(0, 90, 156, 0.15);
+}
 
 .gs-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .gs-remember {
     display: flex;
     align-items: center;
-    gap: 6px;
-    color: #6b8c78;
+    gap: 8px;
+    color: var(--text-muted);
+    font-weight: 500;
     cursor: pointer;
 }
 
-.gs-remember input { accent-color: #2de88e; }
+.gs-remember input { 
+    accent-color: var(--navy-dark); 
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
 
-.gs-forgot { color: #6b8c78; text-decoration: none; transition: color 0.15s; }
-.gs-forgot:hover { color: #2de88e; }
+.gs-forgot { 
+    color: var(--blue-accent); 
+    text-decoration: none; 
+    font-weight: 600;
+    transition: color 0.2s ease; 
+}
+
+.gs-forgot:hover { 
+    text-decoration: underline; 
+}
 
 .gs-btn {
     width: 100%;
-    background: #2de88e;
-    color: #0a0f0c;
+    background: var(--yellow-gold);
+    color: var(--navy-dark);
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 12px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 700;
     font-family: inherit;
     cursor: pointer;
-    transition: opacity 0.15s;
+    transition: background-color 0.2s ease;
     margin-bottom: 18px;
 }
 
-.gs-btn:hover { opacity: 0.88; }
+.gs-btn:hover { background: var(--yellow-hover); }
 
 .gs-footer-text {
     text-align: center;
-    font-size: 13px;
-    color: #6b8c78;
+    font-size: 14px;
+    color: var(--text-muted);
     margin: 0;
+    font-weight: 500;
 }
 
-.gs-footer-text a { color: #2de88e; text-decoration: none; font-weight: 500; }
+.gs-footer-text a { 
+    color: var(--blue-accent); 
+    text-decoration: none; 
+    font-weight: 700; 
+}
+
 .gs-footer-text a:hover { text-decoration: underline; }
 
 .gs-status {
-    background: #2de88e18;
-    border: 0.5px solid #2de88e40;
-    color: #2de88e;
-    font-size: 12px;
+    background: var(--success-bg);
+    border: 1px solid var(--blue-accent);
+    color: var(--success-text);
+    font-size: 13px;
+    font-weight: 600;
     border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 14px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
 }
 
 .gs-error {
-    font-size: 11px;
-    color: #e8836e;
+    font-size: 12px;
+    color: var(--danger);
     margin-top: 4px;
+    font-weight: 600;
 }
 </style>
 

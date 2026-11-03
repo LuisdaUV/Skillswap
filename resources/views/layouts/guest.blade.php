@@ -6,20 +6,35 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>{{ config('app.name', 'SkillSwap') }}</title>
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>
+            /* ── VARIABLES PALETA ACADÉMICA ── */
+            :root {
+                --bg-app: #F4F6F8;             /* Gris claro de fondo */
+                --bg-surface: #FFFFFF;         /* Blanco puro para paneles */
+                --border-color: #CBD5E1;       /* Bordes definidos */
+                
+                --navy-dark: #002B49;          /* Azul Marino Profundo */
+                --blue-accent: #005A9C;        /* Azul Institucional */
+                --yellow-gold: #FFC700;        /* Amarillo / Dorado Escolar */
+                
+                --text-main: #0F172A;          /* Texto principal */
+                --text-muted: #64748B;         /* Texto secundario */
+            }
+
             *, *::before, *::after { box-sizing: border-box; }
 
             body {
                 margin: 0;
                 min-height: 100vh;
-                background: #0a0f0c;
+                background: var(--bg-app);
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-family: 'Figtree', sans-serif;
+                font-family: 'Figtree', system-ui, -apple-system, sans-serif;
                 padding: 24px 16px;
+                color: var(--text-main);
             }
 
             .gs-wrapper {
@@ -28,9 +43,11 @@
                 width: 100%;
                 max-width: 920px;
                 min-height: 540px;
-                border-radius: 18px;
+                border-radius: 16px;
                 overflow: hidden;
-                border: 0.5px solid #1e2e22;
+                border: 1px solid var(--border-color);
+                background: var(--bg-surface);
+                box-shadow: 0 4px 20px rgba(0, 43, 73, 0.06);
             }
 
             @media (max-width: 640px) {
@@ -38,19 +55,20 @@
                 .gs-brand-panel { display: none; }
             }
 
+            /* ── PANEL IZQUIERDO: BRANDING ── */
             .gs-brand-panel {
-                background: #0f1410;
+                background: var(--navy-dark);
                 padding: 40px 36px;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-                border-right: 0.5px solid #1e2e22;
+                color: #FFFFFF;
             }
 
             .gs-logo {
                 display: flex;
                 align-items: center;
-                gap: 10px;
+                gap: 12px;
                 text-decoration: none;
             }
 
@@ -59,33 +77,72 @@
                 height: 38px;
                 border-radius: 50%;
                 object-fit: cover;
-                border: 1.5px solid #2de88e;
+                border: 2px solid var(--yellow-gold);
             }
 
-            .gs-logo-text { font-size: 16px; font-weight: 500; color: #e8f5ee; }
+            .gs-logo-text { 
+                font-size: 20px; 
+                font-weight: 800; 
+                color: #FFFFFF; 
+                letter-spacing: -0.5px;
+            }
 
-            .gs-brand-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+            .gs-brand-body { 
+                flex: 1; 
+                display: flex; 
+                flex-direction: column; 
+                justify-content: center; 
+            }
 
             .gs-tagline {
                 font-size: 28px;
-                font-weight: 500;
-                color: #2de88e;
+                font-weight: 800;
+                color: #FFFFFF;
                 line-height: 1.25;
                 margin: 0 0 12px;
+                letter-spacing: -0.5px;
             }
 
-            .gs-tagline-sub { font-size: 13px; color: #6b8c78; margin: 0; line-height: 1.6; }
+            .gs-tagline-sub { 
+                font-size: 14px; 
+                color: #E2E8F0; 
+                margin: 0; 
+                line-height: 1.6; 
+            }
 
-            .gs-features { display: flex; flex-direction: column; gap: 10px; margin-top: 32px; }
+            .gs-features { 
+                display: flex; 
+                flex-direction: column; 
+                gap: 12px; 
+                margin-top: 32px; 
+            }
 
-            .gs-feature { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #6b8c78; }
+            .gs-feature { 
+                display: flex; 
+                align-items: center; 
+                gap: 10px; 
+                font-size: 13px; 
+                font-weight: 500;
+                color: #F1F5F9; 
+            }
 
-            .gs-feature-dot { width: 6px; height: 6px; border-radius: 50%; background: #2de88e; flex-shrink: 0; }
+            .gs-feature-dot { 
+                width: 8px; 
+                height: 8px; 
+                border-radius: 50%; 
+                background: var(--yellow-gold); 
+                flex-shrink: 0; 
+            }
 
-            .gs-brand-footer { font-size: 11px; color: #3a4e40; }
+            .gs-brand-footer { 
+                font-size: 12px; 
+                color: #94A3B8; 
+                font-weight: 500;
+            }
 
+            /* ── PANEL DERECHO: FORMULARIO ── */
             .gs-form-panel {
-                background: #0a0f0c;
+                background: var(--bg-surface);
                 padding: 40px 36px;
                 display: flex;
                 flex-direction: column;

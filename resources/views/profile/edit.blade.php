@@ -1,177 +1,227 @@
 <x-app-layout>
 <style>
-*, *::before, *::after { box-sizing: border-box; }
-
-.sk-page { padding: 24px 20px; max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-
-.sk-card {
-    background: #0f1410;
-    border: 0.5px solid #1e2e22;
-    border-radius: 14px;
-    padding: 20px;
+/* ── VARIABLES PALETA ACADÉMICA ── */
+:root {
+    --bg-app: #F4F6F8;             /* Gris claro institucional */
+    --bg-surface: #FFFFFF;         /* Blanco puro para tarjetas */
+    --bg-surface-hover: #EBF3FA;   /* Azul ultra claro para hovers */
+    --border-color: #CBD5E1;       /* Bordes definidos */
+    
+    --navy-dark: #002B49;          /* Azul Marino Profundo */
+    --blue-accent: #005A9C;        /* Azul Institucional */
+    --yellow-gold: #FFC700;        /* Amarillo / Dorado Escolar */
+    
+    --text-main: #0F172A;          /* Texto principal */
+    --text-muted: #64748B;         /* Texto secundario */
 }
 
-/* Hero de perfil */
+*, *::before, *::after { box-sizing: border-box; }
+
+.sk-page { 
+    padding: 24px 20px; 
+    max-width: 860px; 
+    margin: 0 auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 16px; 
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--text-main);
+}
+
+.sk-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 6px rgba(0, 43, 73, 0.04);
+}
+
+/* ── HERO DE PERFIL ── */
 .sk-profile-hero {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 20px;
 }
 
 .sk-avatar-lg {
-    width: 64px;
-    height: 64px;
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
-    background: #2de88e22;
-    border: 2px solid #2de88e;
+    background: var(--navy-dark);
+    border: 2px solid var(--navy-dark);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 22px;
-    font-weight: 500;
-    color: #2de88e;
+    font-weight: 800;
+    color: #FFFFFF;
     flex-shrink: 0;
     text-transform: uppercase;
 }
 
 .sk-profile-name {
-    font-size: 20px;
-    font-weight: 500;
-    color: #e8f5ee;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--navy-dark);
     margin: 0 0 3px;
+    letter-spacing: -0.5px;
 }
 
-.sk-profile-email { font-size: 13px; color: #6b8c78; margin: 0 0 8px; }
+.sk-profile-email { 
+    font-size: 14px; 
+    color: var(--text-muted); 
+    margin: 0 0 10px; 
+    font-weight: 500;
+}
 
-.sk-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.sk-badges { display: flex; flex-wrap: wrap; gap: 8px; }
 
 .sk-badge-pill {
-    font-size: 11px;
-    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
     border-radius: 99px;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
 }
 
-.sk-badge-verified { background: #2de88e18; color: #2de88e; border: 0.5px solid #2de88e40; }
-.sk-badge-credits  { background: #3d9be918; color: #3d9be9; border: 0.5px solid #3d9be940; }
-.sk-badge-code     { background: #b06de818; color: #b06de8; border: 0.5px solid #b06de840; }
+.sk-badge-verified { background: #E0F2FE; color: var(--blue-accent); border: 1px solid rgba(0, 90, 156, 0.2); }
+.sk-badge-credits  { background: #FEF3C7; color: #92400E; border: 1px solid rgba(255, 199, 0, 0.4); }
+.sk-badge-code     { background: #F1F5F9; color: var(--navy-dark); border: 1px solid var(--border-color); font-family: monospace; }
 
-/* Info de cuenta */
+/* ── INFO DE CUENTA ── */
 .sk-section-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: #2de88e;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--navy-dark);
     text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin: 0 0 14px;
+    letter-spacing: 0.05em;
+    margin: 0 0 16px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .sk-info-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 11px 0;
-    border-bottom: 0.5px solid #1e2e22;
-    font-size: 13px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 14px;
 }
 
 .sk-info-row:last-child { border-bottom: none; padding-bottom: 0; }
-.sk-info-key  { color: #6b8c78; }
-.sk-info-val  { color: #e8f5ee; font-weight: 500; }
-.sk-info-val.accent { color: #2de88e; }
+.sk-info-key  { color: var(--text-muted); font-weight: 500; }
+.sk-info-val  { color: var(--text-main); font-weight: 600; }
+.sk-info-val.accent { color: var(--blue-accent); font-weight: 700; font-family: monospace; }
 
-/* Estadísticas */
+/* ── ESTADÍSTICAS ── */
 .sk-stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 12px;
 }
 
 @media (max-width: 600px) { .sk-stats-grid { grid-template-columns: 1fr; } }
 
 .sk-stat-card {
-    background: #141c17;
-    border: 0.5px solid #1e2e22;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 16px;
+    padding: 20px;
     text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 43, 73, 0.04);
 }
 
-.sk-stat-num { font-size: 28px; font-weight: 500; color: #2de88e; margin: 0 0 4px; }
-.sk-stat-label { font-size: 12px; color: #6b8c78; margin: 0; }
+.sk-stat-num { font-size: 30px; font-weight: 800; color: var(--navy-dark); margin: 0 0 4px; }
+.sk-stat-label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin: 0; }
 
-/* Habilidades */
+/* ── HABILIDADES ── */
 .sk-skills-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
 }
 
 .sk-btn-sm {
-    background: none;
-    border: 0.5px solid #1e2e22;
+    background: var(--bg-app);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 5px 12px;
-    font-size: 12px;
-    color: #6b8c78;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy-dark);
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 4px;
-    transition: border-color 0.15s, color 0.15s;
+    gap: 6px;
+    transition: all 0.2s ease;
 }
 
-.sk-btn-sm:hover { border-color: #2de88e; color: #2de88e; }
+.sk-btn-sm:hover { border-color: var(--blue-accent); color: var(--blue-accent); background: var(--bg-surface-hover); }
 
-.sk-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.sk-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 
 .sk-tag {
-    background: #141c17;
-    border: 0.5px solid #1e2e22;
-    color: #c8e8d4;
-    font-size: 12px;
-    padding: 4px 12px;
+    background: var(--bg-app);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
     border-radius: 99px;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
 }
 
-.sk-tag-level { color: #2de88e; font-size: 11px; }
+.sk-tag-level { color: var(--blue-accent); font-size: 12px; font-weight: 700; }
 
 .sk-empty-inline {
-    font-size: 13px;
-    color: #6b8c78;
-    padding: 16px;
+    font-size: 14px;
+    color: var(--text-muted);
+    padding: 20px;
     text-align: center;
-    background: #141c17;
-    border: 0.5px solid #1e2e22;
-    border-radius: 9px;
+    background: var(--bg-app);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
 }
 
 .sk-manage-link {
     display: flex;
     justify-content: flex-end;
-    margin-top: 12px;
+    margin-top: 16px;
 }
 
 .sk-manage-link a {
-    font-size: 12px;
-    color: #6b8c78;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--blue-accent);
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 4px;
-    transition: color 0.15s;
+    gap: 6px;
+    transition: color 0.2s ease;
 }
 
-.sk-manage-link a:hover { color: #2de88e; }
+.sk-manage-link a:hover { text-decoration: underline; }
+
+.sk-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-top: 8px;
+    transition: color 0.2s ease;
+}
+
+.sk-back:hover { color: var(--navy-dark); }
 </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
@@ -187,15 +237,15 @@
                 <p class="sk-profile-email">{{ Auth::user()->email }}</p>
                 <div class="sk-badges">
                     <span class="sk-badge-pill sk-badge-verified">
-                        <i class="ti ti-circle-check" style="font-size:12px" aria-hidden="true"></i>
+                        <i class="ti ti-circle-check" style="font-size:14px" aria-hidden="true"></i>
                         Estudiante verificado
                     </span>
                     <span class="sk-badge-pill sk-badge-credits">
-                        <i class="ti ti-coin" style="font-size:12px" aria-hidden="true"></i>
+                        <i class="ti ti-coin" style="font-size:14px" aria-hidden="true"></i>
                         {{ Auth::user()->credits ?? 3 }} créditos
                     </span>
                     <span class="sk-badge-pill sk-badge-code">
-                        <i class="ti ti-id-badge" style="font-size:12px" aria-hidden="true"></i>
+                        <i class="ti ti-id-badge" style="font-size:14px" aria-hidden="true"></i>
                         {{ Auth::user()->university_id }}
                     </span>
                 </div>
@@ -245,7 +295,7 @@
                 <i class="ti ti-trophy" aria-hidden="true"></i> Mis habilidades
             </p>
             <a href="{{ route('skills.create') }}" class="sk-btn-sm">
-                <i class="ti ti-plus" style="font-size:12px" aria-hidden="true"></i> Agregar
+                <i class="ti ti-plus" style="font-size:14px" aria-hidden="true"></i> Agregar
             </a>
         </div>
 
@@ -266,13 +316,13 @@
 
         <div class="sk-manage-link">
             <a href="{{ route('skills.index') }}">
-                Administrar habilidades <i class="ti ti-arrow-right" style="font-size:12px" aria-hidden="true"></i>
+                Administrar habilidades <i class="ti ti-arrow-right" style="font-size:14px" aria-hidden="true"></i>
             </a>
         </div>
     </div>
 
     <a href="{{ route('dashboard') }}" class="sk-back">
-        <i class="ti ti-arrow-left" style="font-size:13px" aria-hidden="true"></i> Volver al dashboard
+        <i class="ti ti-arrow-left" style="font-size:16px" aria-hidden="true"></i> Volver al dashboard
     </a>
 
 </div>
