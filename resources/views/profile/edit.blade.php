@@ -275,7 +275,7 @@
     {{-- Estadísticas --}}
     <div class="sk-stats-grid">
         <div class="sk-stat-card">
-            <p class="sk-stat-num">{{ \App\Models\Skill::count() }}</p>
+            <p class="sk-stat-num">{{ Auth::user()->skills->count() }}</p>
             <p class="sk-stat-label">Habilidades totales</p>
         </div>
         <div class="sk-stat-card">
