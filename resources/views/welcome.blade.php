@@ -316,9 +316,7 @@
                 <div>
                     <div class="logo-row">
                         <div class="logo-circle">
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
-                            </svg>
+                            <img src="{{ asset('images/logo.jpeg') }}" alt="Logo SkillSwap" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb;">
                         </div>
                         <span class="logo-name">SkillSwap</span>
                     </div>
