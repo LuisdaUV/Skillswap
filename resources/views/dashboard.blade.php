@@ -257,6 +257,11 @@
                 <i class="ti ti-books"></i> Mis habilidades
             </a>
 
+            <a href="#historial-sesiones" class="ss-nav-item">
+                <i class="ti ti-history" aria-hidden="true"></i>
+                Historial de sesiones
+            </a>
+
             <span class="ss-nav-item ss-nav-item-disabled">
                 <i class="ti ti-chart-bar"></i> Estadísticas
                 <span class="ss-badge-soon">pronto</span>
@@ -337,6 +342,7 @@
             <p class="ss-req-title">Sesiones pendientes</p>
         </div>
 
+        
         @forelse ($pendingSessions as $session)
             @php
                 $isSender = (int) $session->sender_id === (int) auth()->id();
@@ -363,6 +369,52 @@
                 @else
                     <p>Fecha y hora por definir.</p>
                 @endif
+
+                @php
+    $alreadyConfirmed = $isSender
+        ? $session->sender_completed_at
+        : $session->receiver_completed_at;
+
+    $scheduledAt = ($session->meet_date && $session->meet_time)
+        ? \Illuminate\Support\Carbon::parse(
+            $session->meet_date . ' ' . $session->meet_time,
+            'America/Bogota'
+        )
+        : null;
+@endphp
+
+@if ($alreadyConfirmed)
+    <p>Ya confirmaste. Falta la confirmación de tu compañero.</p>
+@elseif (!$scheduledAt)
+    <p>La sesión aún no tiene fecha y hora acordadas.</p>
+@elseif ($scheduledAt->isFuture())
+    <p>
+        <strong>Aún no es la hora acordada.</strong>
+        Podrás confirmar tu asistencia a partir de las
+        {{ $scheduledAt->format('g:i a') }} del {{ $scheduledAt->format('d/m/Y') }}.
+    </p>
+@else
+    <form method="POST" action="{{ route('exchanges.confirm-completion', $session) }}">
+        @csrf
+        <button type="submit" class="ss-req-btn-accept">
+            Confirmar sesión realizada
+        </button>
+    </form>
+@endif
+
+<form method="POST"
+    action="{{ route('exchanges.cancel', $session) }}"
+    onsubmit="return window.confirm('¿Quieres cancelar esta sesión?');"
+    style="margin-top: 10px;">
+    @csrf
+
+    <button type="submit" class="ss-req-btn-reject">
+        Cancelar sesión
+    </button>
+</form>
+
+
+
             </div>
         </div>
     @empty
@@ -423,6 +475,47 @@
                     <p style="font-size:13px;color:var(--text-muted);margin:0;">No tienes solicitudes de intercambio pendientes.</p>
                 @endif
             </div>
+
+
+            <div id="historial-sesiones" class="ss-req-container">
+    <div class="ss-req-header">
+        <i class="ti ti-history" aria-hidden="true"></i>
+        <h2 class="ss-req-title">Historial de sesiones</h2>
+    </div>
+
+    @forelse ($sessionHistory as $pastSession)
+        @php
+            $isSender = (int) $pastSession->sender_id === (int) auth()->id();
+            $partner = $isSender ? $pastSession->receiver : $pastSession->sender;
+            $learnedSkill = $isSender ? $pastSession->requestedSkill : $pastSession->offeredSkill;
+            $taughtSkill = $isSender ? $pastSession->offeredSkill : $pastSession->requestedSkill;
+        @endphp
+
+        <div class="ss-req-card">
+            <p class="ss-req-title">
+                Sesión con {{ $partner?->name ?? 'Usuario no disponible' }}
+            </p>
+
+            <div class="ss-req-offer-box">
+                <p><strong>Estado</strong>
+                    {{ $pastSession->status === 'completado' ? 'Completada' : 'Cancelada' }}
+                </p>
+                <p><strong>Habilidad para aprender</strong> {{ $learnedSkill?->name ?? 'No disponible' }}</p>
+                <p><strong>Habilidad para enseñar</strong> {{ $taughtSkill?->name ?? 'No disponible' }}</p>
+
+                @if ($pastSession->meet_date && $pastSession->meet_time)
+                    <p>
+                        <strong>Fecha acordada</strong>
+                        {{ \Illuminate\Support\Carbon::parse($pastSession->meet_date)->format('d/m/Y') }}
+                        a las {{ \Illuminate\Support\Carbon::parse($pastSession->meet_time)->format('g:i a') }}
+                    </p>
+                @endif
+            </div>
+        </div>
+    @empty
+        <p>Aún no tienes sesiones completadas o canceladas.</p>
+    @endforelse
+</div>
 
         </section>
 
