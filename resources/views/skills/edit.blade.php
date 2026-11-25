@@ -183,6 +183,7 @@
                 <select name="level" id="level" class="sk-select" required>
                     <option value="principiante" {{ strtolower($level) == 'principiante' ? 'selected' : '' }}>Principiante</option>
                     <option value="intermedio"   {{ strtolower($level) == 'intermedio'   ? 'selected' : '' }}>Intermedio</option>
+                    <option value="avanzado"     {{ strtolower($level) == 'avanzado'     ? 'selected' : '' }}>Avanzado</option>
                     <option value="experto"      {{ strtolower($level) == 'experto'      ? 'selected' : '' }}>Experto</option>
                 </select>
             </div>

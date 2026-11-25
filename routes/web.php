@@ -25,8 +25,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->where('status', 'pendiente')
             ->get();
 
+        $pendingSessions = Exchange::with(['sender', 'receiver', 'requestedSkill', 'offeredSkill'])
+            ->where('status', 'aceptado')
+            ->where(function ($query) use ($userId) {
+                $query->where('sender_id', $userId)
+                    ->orWhere('receiver_id', $userId);
+            })
+            ->orderBy('meet_date')
+            ->orderBy('meet_time')
+            ->get();
+
+
         // Enviamos la variable a la vista dashboard
-        return view('dashboard', compact('incomingRequests'));
+        return view('dashboard', compact('incomingRequests', 'pendingSessions'));
     })->name('dashboard');
 
 });

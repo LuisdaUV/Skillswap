@@ -331,6 +331,47 @@
                     <p class="ss-req-title">Solicitudes de intercambio recibidas</p>
                 </div>
 
+    <div class="ss-req-container">
+        <div class="ss-req-header">
+            <i class="ti ti-calendar-event" aria-hidden="true"></i>
+            <p class="ss-req-title">Sesiones pendientes</p>
+        </div>
+
+        @forelse ($pendingSessions as $session)
+            @php
+                $isSender = (int) $session->sender_id === (int) auth()->id();
+                $partner = $isSender ? $session->receiver : $session->sender;
+                $learnSkill = $isSender ? $session->requestedSkill : $session->offeredSkill;
+                $teachSkill = $isSender ? $session->offeredSkill : $session->requestedSkill;
+            @endphp
+
+        <div class="ss-req-card">
+            <p class="ss-req-title">
+                Sesión con {{ $partner?->name ?? 'Usuario no disponible' }}
+            </p>
+
+            <div class="ss-req-offer-box">
+                <p><strong>Aprenderás</strong> {{ $learnSkill?->name ?? 'Habilidad no disponible' }}</p>
+                <p><strong>Enseñarás</strong> {{ $teachSkill?->name ?? 'Habilidad no disponible' }}</p>
+
+                @if ($session->meet_date && $session->meet_time)
+                    <p>
+                        <strong>Fecha y hora</strong>
+                        {{ \Carbon\Carbon::parse($session->meet_date)->format('d/m/Y') }}
+                        a las {{ \Carbon\Carbon::parse($session->meet_time)->format('g:i a') }}
+                    </p>
+                @else
+                    <p>Fecha y hora por definir.</p>
+                @endif
+            </div>
+        </div>
+    @empty
+        <p style="font-size:13px;color:var(--text-muted);margin:0;">
+            Aún no tienes sesiones pendientes.
+        </p>
+    @endforelse
+</div>
+
                 @if(isset($incomingRequests) && $incomingRequests->count() > 0)
                     @foreach($incomingRequests as $request)
                         <div class="ss-req-card">
