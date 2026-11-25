@@ -30,6 +30,8 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $userModel = config('auth.providers.users.model');
+
         // 1. Convertimos el email automáticamente a minúsculas para evitar errores
         $request->merge([
             'email' => mb_strtolower($request->email),
@@ -44,18 +46,20 @@ class RegisteredUserController extends Controller
             'university_id.unique' => 'Esta matrícula o código ya está registrado en SkillSwap.',
             'password.min' => 'La contraseña es muy corta, pon al menos 8 caracteres.',
             'password.confirmed' => 'Las contraseñas no coinciden, verifica de nuevo.',
+            'terms.accepted' => 'Debes aceptar los términos y condiciones para crear tu cuenta.',
         ];
 
         // 3. Ejecutamos la validación pasando las reglas y los mensajes
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'university_id' => ['required', 'string', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.$userModel],
+            'university_id' => ['required', 'string', 'max:255', 'unique:'.$userModel],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'terms' => ['accepted'],
         ], $messages);
 
         // 4. Si todo está bien, creamos el usuario
-        $user = User::create([
+        $user = $userModel::create([
             'name' => $request->name,
             'email' => $request->email,
             'university_id' => $request->university_id,

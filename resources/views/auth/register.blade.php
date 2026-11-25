@@ -138,6 +138,38 @@
             placeholder="Confirmar contraseña" required class="gs-input">
     </div>
 
+    <div class="gs-field">
+    <details open>
+        <summary><strong>Términos y condiciones de SkillSwap</strong></summary>
+
+        <p>SkillSwap es un prototipo académico para compartir y aprender habilidades
+            entre estudiantes. Los créditos se usan para intercambios dentro de
+            la plataforma y carecen de valor monetario.</p>
+
+        <p>Usa tu propia cuenta y comparte información veraz. Se prohíbe suplantar
+            a otras personas, enviar spam o manipular créditos e intercambios.</p>
+
+        <p>Trata a los demás con respeto. Se prohíben las groserías, los insultos,
+            el lenguaje discriminatorio, las amenazas y el ciberacoso, incluido
+            el hostigamiento repetido o la difusión de datos personales de otra
+            persona sin su permiso.</p>
+
+        <p>Estas reglas se aplican a los perfiles, las publicaciones y cualquier
+            interacción en SkillSwap. Si la administración confirma un
+            incumplimiento, eliminará la cuenta responsable.</p>
+    </details>
+
+    <label>
+        <input type="checkbox" name="terms" value="1"
+            @checked(old('terms')) required>
+        He leído y acepto los términos y condiciones de SkillSwap.
+    </label>
+
+    @error('terms')
+        <p class="gs-error">{{ $message }}</p>
+    @enderror
+</div>
+
     <button type="submit" class="gs-btn">Registrarse</button>
 
     <p class="gs-footer-text">
