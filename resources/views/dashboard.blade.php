@@ -296,6 +296,18 @@
         {{-- ── CENTRO ── --}}
         <section class="ss-center">
 
+        @if (session('report_notice'))
+            <p role="status">{{ session('report_notice') }}</p>
+        @endif
+
+        @if ($errors->sessionReport->any())
+            <ul role="alert">
+        @foreach ($errors->sessionReport->all() as $message)
+            <li>{{ $message }}</li>
+        @endforeach
+            </ul>
+        @endif
+
             <div class="ss-hero">
                 <p class="ss-hero-greeting">¡Hola, {{ Auth::user()->name }}!</p>
                 <p class="ss-hero-sub">Buen día para aprender e intercambiar conocimiento</p>
@@ -512,6 +524,7 @@
                         a las {{ \Illuminate\Support\Carbon::parse($pastSession->meet_time)->format('g:i a') }}
                     </p>
                 @endif
+                @include('partials.session-report-form', ['reportSession' => $pastSession])
             </div>
         </div>
     @empty
