@@ -83,6 +83,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/exchanges/{exchange}/cancel', [ExchangeController::class, 'cancel'])
     ->middleware('verified')
     ->name('exchanges.cancel');
+
+    Route::post('/exchanges/{exchange}/report', [ExchangeController::class, 'report'])
+    ->middleware('verified')
+    ->name('exchanges.report');
+    
 });
 
 require __DIR__.'/auth.php';
