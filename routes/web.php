@@ -99,10 +99,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/{report}/descartar', [ReportController::class, 'discard'])
             ->whereNumber('report')
             ->name('discard');
+
+            Route::post('/{report}/sancionar', [ReportController::class, 'sanction'])
+            ->whereNumber('report')
+            ->name('sanction');
     });
-
-  
-
 });
 
 require __DIR__.'/auth.php';

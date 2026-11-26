@@ -167,6 +167,16 @@
                     @csrf
                     <button type="submit" class="reports-discard">Descartar reporte</button>
                 </form>
+                <form method="POST"
+    action="{{ route('admin.reports.sanction', $report->id) }}"
+    onsubmit="return window.confirm('¿Aplicar la sanción? La cuenta perderá el acceso y sus intercambios abiertos serán cancelados.');"
+    style="margin-top: 10px;">
+    @csrf
+
+    <button type="submit" class="reports-discard">
+        Aplicar sanción
+    </button>
+</form>
             </article>
         @empty
             <p class="reports-card">No hay reportes pendientes de revisión.</p>
