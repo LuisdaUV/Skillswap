@@ -262,6 +262,13 @@
                 Historial de sesiones
             </a>
 
+            @can('moderate-reports')
+    <a href="{{ route('admin.reports.index') }}" class="ss-nav-item">
+        <i class="ti ti-shield-check" aria-hidden="true"></i>
+        Moderación
+    </a>
+@endcan
+
             <span class="ss-nav-item ss-nav-item-disabled">
                 <i class="ti ti-chart-bar"></i> Estadísticas
                 <span class="ss-badge-soon">pronto</span>
@@ -290,6 +297,8 @@
                     <i class="ti ti-logout"></i> Cerrar sesión
                 </button>
             </form>
+
+            
 
         </aside>
 

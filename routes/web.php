@@ -7,6 +7,7 @@ use App\Http\Controllers\SkillController;
 use App\Models\Exchange;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ReportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -87,7 +88,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/exchanges/{exchange}/report', [ExchangeController::class, 'report'])
     ->middleware('verified')
     ->name('exchanges.report');
-    
+
+    Route::middleware(['auth', 'verified', 'can:moderate-reports'])
+    ->prefix('admin/reportes')
+    ->name('admin.reports.')
+    ->group(function () {
+        Route::get('/', [ReportController::class, 'index'])
+            ->name('index');
+
+        Route::post('/{report}/descartar', [ReportController::class, 'discard'])
+            ->whereNumber('report')
+            ->name('discard');
+    });
+
+  
+
 });
 
 require __DIR__.'/auth.php';
