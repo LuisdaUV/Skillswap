@@ -143,6 +143,45 @@ public function cancel(Exchange $exchange)
     );
 }
 
+public function report(Request $request, Exchange $exchange)
+{
+    $reporterId = (int) Auth::id();
+    $senderId = (int) $exchange->sender_id;
+    $receiverId = (int) $exchange->receiver_id;
+
+    abort_unless($reporterId === $senderId || $reporterId === $receiverId, 403);
+
+    abort_unless(
+        in_array($exchange->status, ['aceptado', 'completado', 'cancelado'], true),
+        404
+    );
+
+    $data = $request->validateWithBag('sessionReport', [
+        'reason' => ['required', 'in:insultos,ciberacoso,suplantacion,otro'],
+        'description' => ['required', 'string', 'max:1000'],
+    ], [
+        'reason.required' => 'Selecciona un motivo.',
+        'reason.in' => 'Selecciona un motivo válido.',
+        'description.required' => 'Describe brevemente qué ocurrió.',
+        'description.max' => 'La descripción debe tener máximo 1000 caracteres.',
+    ]);
+
+    DB::table('reports')->insert([
+        'reporter_id' => $reporterId,
+        'reported_user_id' => $reporterId === $senderId ? $receiverId : $senderId,
+        'exchange_id' => $exchange->id,
+        'reason' => $data['reason'],
+        'description' => $data['description'],
+        'status' => 'pendiente',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    return redirect()->route('dashboard')
+        ->with('report_notice', 'Reporte enviado. Quedó pendiente de revisión.');
+}
+
+
 
     /**
      * Rechaza una solicitud de intercambio.
