@@ -517,6 +517,39 @@
     @endforelse
 </div>
 
+<div id="solicitudes-enviadas" class="ss-req-container">
+    <div class="ss-req-header">
+        <i class="ti ti-send" aria-hidden="true"></i>
+        <h2 class="ss-req-title">Solicitudes enviadas</h2>
+    </div>
+
+    @forelse ($sentRequests as $sentRequest)
+        <div class="ss-req-card">
+            <p class="ss-req-title">
+                Enviada a {{ $sentRequest->receiver?->name ?? 'Usuario no disponible' }}
+            </p>
+
+            <div class="ss-req-offer-box">
+                <p><strong>Quieres aprender</strong> {{ $sentRequest->requestedSkill?->name ?? 'No disponible' }}</p>
+                <p><strong>Ofreces enseñar</strong> {{ $sentRequest->offeredSkill?->name ?? 'No disponible' }}</p>
+                <p>
+                    <strong>Estado</strong>
+                    {{ match ($sentRequest->status) {
+                        'pendiente' => 'Pendiente de respuesta',
+                        'aceptado' => 'Aceptada',
+                        'rechazado' => 'Rechazada',
+                        'completado' => 'Completada',
+                        'cancelado' => 'Cancelada',
+                        default => 'Estado no disponible',
+                    } }}
+                </p>
+            </div>
+        </div>
+    @empty
+        <p>Aún no has enviado solicitudes de intercambio.</p>
+    @endforelse
+</div>
+
         </section>
 
         {{-- ── COLUMNA DERECHA ── --}}

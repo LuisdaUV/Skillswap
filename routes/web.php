@@ -40,10 +40,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->latest('updated_at')
             ->get();
 
+        $sentRequests = Exchange::with(['receiver', 'requestedSkill', 'offeredSkill'])
+            ->where('sender_id', $userId)
+            ->latest('id')
+            ->get();    
+
         return view('dashboard', compact(
             'incomingRequests',
             'pendingSessions',
             'sessionHistory',
+            'sentRequests',
         ));
     })->name('dashboard');
 });
