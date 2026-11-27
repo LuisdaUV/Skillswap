@@ -262,6 +262,11 @@
                 Historial de sesiones
             </a>
 
+            <a href="#mis-movimientos" class="ss-nav-item">
+                <i class="ti ti-coins" aria-hidden="true"></i>
+                Mis movimientos
+            </a>
+
             @can('moderate-reports')
     <a href="{{ route('admin.reports.index') }}" class="ss-nav-item">
         <i class="ti ti-shield-check" aria-hidden="true"></i>
@@ -578,6 +583,42 @@
     @empty
         <p>Aún no has enviado solicitudes de intercambio.</p>
     @endforelse
+</div>
+
+    <div id="mis-movimientos" class="ss-req-container">
+    <div class="ss-req-header">
+        <i class="ti ti-coins" aria-hidden="true"></i>
+        <h2 class="ss-req-title">Mis movimientos</h2>
+    </div>
+
+    <p><strong>Saldo actual</strong> {{ auth()->user()->credits }}</p>
+
+    @forelse ($creditMovements as $movement)
+        @php
+            $spent = (int) $movement->payer_id === (int) auth()->id();
+            $partnerName = $spent ? $movement->recipient_name : $movement->payer_name;
+        @endphp
+
+        <div class="ss-req-card">
+            <p class="ss-req-title">
+                {{ $spent ? '−' : '+' }}{{ $movement->amount }}
+                {{ (int) $movement->amount === 1 ? 'crédito' : 'créditos' }}
+            </p>
+            <p>
+                {{ $spent ? 'Pagado a' : 'Recibido de' }}
+                {{ $partnerName ?? 'Cuenta eliminada' }}
+            </p>
+            <p>
+                {{ $movement->exchange_id ? 'Sesión #' . $movement->exchange_id : 'Sesión eliminada' }}
+                · {{ \Illuminate\Support\Carbon::parse($movement->created_at, config('app.timezone'))
+                    ->setTimezone('America/Bogota')->format('d/m/Y, g:i a') }}
+            </p>
+        </div>
+    @empty
+        <p>Aún no tienes movimientos de créditos.</p>
+    @endforelse
+
+    {{ $creditMovements->links() }}
 </div>
 
         </section>

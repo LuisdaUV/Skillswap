@@ -8,6 +8,7 @@ use App\Models\Exchange;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ReportController;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
     return view('welcome');
@@ -46,11 +47,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->latest('id')
             ->get();    
 
+
+        $creditMovements = DB::table('credit_transfers as transfer')
+    ->leftJoin('users as payer', 'payer.id', '=', 'transfer.payer_id')
+    ->leftJoin('users as recipient', 'recipient.id', '=', 'transfer.recipient_id')
+    ->where(function ($query) use ($userId) {
+        $query->where('transfer.payer_id', $userId)
+            ->orWhere('transfer.recipient_id', $userId);
+    })
+    ->select(
+        'transfer.exchange_id',
+        'transfer.payer_id',
+        'transfer.amount',
+        'transfer.created_at',
+        'payer.name as payer_name',
+        'recipient.name as recipient_name',
+    )
+    ->orderByDesc('transfer.id')
+    ->paginate(10, ['*'], 'movimientos')
+    ->fragment('mis-movimientos');
+
         return view('dashboard', compact(
             'incomingRequests',
             'pendingSessions',
             'sessionHistory',
             'sentRequests',
+            'creditMovements'
         ));
     })->name('dashboard');
 });
