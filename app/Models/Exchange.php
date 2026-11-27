@@ -21,9 +21,10 @@ class Exchange extends Model
         'receiver_id',
         'requested_skill_id',
         'offered_skill_id',
+        'mode',
         'status',
         'meet_date',
-        'meet_time'
+        'meet_time',
     ];
 
     /**

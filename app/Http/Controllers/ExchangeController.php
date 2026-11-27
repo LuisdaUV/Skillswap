@@ -7,6 +7,7 @@ use App\Models\Exchange;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use App\Models\User;
 
 
 class ExchangeController extends Controller
@@ -16,7 +17,9 @@ class ExchangeController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validar estrictamente los datos que vienen del Modal
+        
+        $request->merge(['mode' => $request->input('mode', 'directo')]);
+    // 1. Validar estrictamente los datos que vienen del Modal
         $request->validate([
             'receiver_id' => [
                 'required',
@@ -29,7 +32,8 @@ class ExchangeController extends Controller
                 },
             ],
             'requested_skill_id' => 'required|exists:skills,id',
-            'offered_skill_id' => 'required|exists:skills,id',
+            'mode' => ['required', 'in:directo,creditos'],
+            'offered_skill_id' => ['exclude_unless:mode,directo', 'required', 'exists:skills,id'],
 
             'meet_date' => 'required|date|after_or_equal:today',
             'meet_time' => 'required|date_format:H:i',
@@ -43,7 +47,10 @@ class ExchangeController extends Controller
             'sender_id'          => Auth::id(),
             'receiver_id'        => $request->receiver_id,
             'requested_skill_id' => $request->requested_skill_id,
-            'offered_skill_id'   => $request->offered_skill_id,
+            'mode' => $request->input('mode'),
+            'offered_skill_id' => $request->input('mode') === 'directo'
+                ? $request->input('offered_skill_id')
+                : null,
             'meet_date'          => $request->meet_date,
             'meet_time'          => $request->meet_time,
             'status'             => 'pendiente', // Estado inicial por defecto
@@ -102,13 +109,50 @@ class ExchangeController extends Controller
         }
 
         $confirmation = $isSender ? 'sender_completed_at' : 'receiver_completed_at';
-        $session->{$confirmation} ??= now();
+        $otherConfirmation = $isSender ? 'receiver_completed_at' : 'sender_completed_at';
 
-        if ($session->sender_completed_at && $session->receiver_completed_at) {
-            $session->status = 'completado';
+        if ($session->mode === 'creditos' && $session->{$otherConfirmation} !== null) {
+            $participants = User::query()
+                ->whereKey([$session->sender_id, $session->receiver_id])
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
+
+            $payer = $participants->get($session->sender_id);
+            $recipient = $participants->get($session->receiver_id);
+
+            if (!$payer || !$recipient) {
+                return back()->with('session_notice', 'Una de las cuentas ya no está activa.');
+            }
+
+            if ($payer->credits < 1) {
+                return back()->with(
+                    'session_notice',
+                    'La sesión sigue pendiente porque quien la solicitó necesita 1 crédito. Podrás volver a confirmar cuando tenga saldo.'
+                );
+            }
+
+            $payer->decrement('credits', 1);
+            $recipient->increment('credits', 1);
+
+            DB::table('credit_transfers')->insert([
+                'exchange_id' => $session->id,
+                'payer_id' => $payer->id,
+                'recipient_id' => $recipient->id,
+                'amount' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
 
-        $session->save();
+$session->{$confirmation} ??= now();
+
+if ($session->sender_completed_at && $session->receiver_completed_at) {
+    $session->status = 'completado';
+}
+
+$session->save();
 
         return back()->with(
             'session_notice',

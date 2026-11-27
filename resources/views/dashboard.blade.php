@@ -465,9 +465,15 @@
                             </div>
 
                             <div class="ss-req-offer-box">
-                                <p style="font-size:13px;color:var(--text-main);margin:0;line-height:1.5;">
-                                    Quiere aprender tu habilidad de <strong style="color:var(--navy-dark);">{{ $request->requestedSkill->name }}</strong> 
-                                    y te ofrece a cambio su conocimiento en <strong style="color:var(--blue-accent);">{{ $request->offeredSkill->name }}</strong>.
+                                <p>
+                                    Quiere aprender <strong>{{ $request->requestedSkill?->name ?? 'Habilidad no disponible' }}</strong>.
+
+                                     @if ($request->mode === 'creditos')
+                                        Te ofrece <strong>1 crédito</strong> por una sesión de una hora.
+                                    @else
+                                        Te ofrece enseñar <strong>{{ $request->offeredSkill?->name ?? 'Habilidad no disponible' }}</strong>
+                                        a cambio.
+                                    @endif
                                 </p>
 
                                 @if($request->meet_date && $request->meet_time)

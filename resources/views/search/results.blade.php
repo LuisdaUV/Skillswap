@@ -420,46 +420,74 @@
                                     </div>
                                     
                                     <p class="sk-modal-text">
-                                        Vas a solicitar la habilidad <strong>{{ $result['skill']->name }}</strong> de <strong>{{ $user->name }}</strong>. Elige cuál de tus conocimientos le ofreces a cambio:
-                                    </p>
+    Vas a solicitar la habilidad <strong>{{ $result['skill']->name }}</strong>
+    de <strong>{{ $user->name }}</strong>. Elige la modalidad de la sesión.
+</p>
 
-                                    <form action="{{ route('exchanges.store') }}" method="POST">
-                                        @csrf
-                                        {{-- IDs ocultos necesarios para el backend --}}
-                                        <input type="hidden" name="receiver_id" value="{{ $user->id }}">
-                                        <input type="hidden" name="requested_skill_id" value="{{ $result['skill']->id }}">
-                                        
-                                        <div class="sk-form-group">
-                                            <label class="sk-label">Tu oferta *</label>
-                                            <select name="offered_skill_id" required class="sk-select">
-                                                <option value="" disabled selected>Selecciona una de tus habilidades...</option>
-                                                @foreach(Auth::user()->skills as $mySkill)
-                                                    <option value="{{ $mySkill->id }}">{{ $mySkill->name }} (Nivel: {{ ucfirst($mySkill->pivot->level) }})</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+<form action="{{ route('exchanges.store') }}" method="POST"
+    x-data="{ exchangeMode: 'directo' }">
+    @csrf
 
-                                        {{-- ========================================================================= --}}
-                                        {{-- COMPONENTE: FECHA Y HORA DEL ENCUENTRO --}}
-                                        {{-- ========================================================================= --}}
-                                        <div class="sk-form-group" style="display: flex; gap: 12px; margin-top: 16px;">
-                                            <div style="flex: 1;">
-                                                <label class="sk-label">¿Qué día se reunirán? *</label>
-                                                <input type="date" name="meet_date" required min="{{ date('Y-m-d') }}" class="sk-select">
-                                            </div>
-                                
-                                            <div style="flex: 1;">
-                                                <label class="sk-label">¿A qué hora? *</label>
-                                                <input type="time" name="meet_time" required class="sk-select">
-                                            </div>
-                                        </div>
-                                        {{-- ========================================================================= --}}
+    <input type="hidden" name="receiver_id" value="{{ $user->id }}">
+    <input type="hidden" name="requested_skill_id" value="{{ $result['skill']->id }}">
 
-                                        <div class="sk-modal-actions">
-                                            <button type="button" @click="modalOpen = false" class="sk-btn-cancel">Cancelar</button>
-                                            <button type="submit" class="sk-btn-swap" style="width: auto; flex: 1;">Enviar solicitud</button>
-                                        </div>
-                                    </form>
+    <div class="sk-form-group">
+        <label class="sk-label">
+            Modalidad
+            <select name="mode" x-model="exchangeMode" class="sk-select" required>
+                <option value="directo">Intercambio directo</option>
+                <option value="creditos">Sesión por 1 crédito</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="sk-form-group" x-show="exchangeMode === 'directo'">
+        <label class="sk-label">
+            Tu oferta
+            <select name="offered_skill_id" class="sk-select"
+                :required="exchangeMode === 'directo'"
+                :disabled="exchangeMode !== 'directo'">
+                <option value="">Selecciona una de tus habilidades</option>
+                @foreach (Auth::user()->skills as $mySkill)
+                    <option value="{{ $mySkill->id }}">
+                        {{ $mySkill->name }} (Nivel: {{ ucfirst($mySkill->pivot->level) }})
+                    </option>
+                @endforeach
+            </select>
+        </label>
+    </div>
+
+    <p class="sk-modal-text" x-show="exchangeMode === 'creditos'" style="display: none;">
+        La sesión dura una hora y cuesta 1 crédito. El crédito se transferirá
+        cuando ambos confirmen que se realizó.
+    </p>
+
+    <div class="sk-form-group" style="display: flex; gap: 12px; margin-top: 16px;">
+        <div style="flex: 1;">
+            <label class="sk-label">
+                ¿Qué día se reunirán? *
+                <input type="date" name="meet_date" required
+                    min="{{ date('Y-m-d') }}" class="sk-select">
+            </label>
+        </div>
+
+        <div style="flex: 1;">
+            <label class="sk-label">
+                ¿A qué hora? *
+                <input type="time" name="meet_time" required class="sk-select">
+            </label>
+        </div>
+    </div>
+
+    <div class="sk-modal-actions">
+        <button type="button" @click="modalOpen = false" class="sk-btn-cancel">
+            Cancelar
+        </button>
+        <button type="submit" class="sk-btn-swap" style="width: auto; flex: 1;">
+            Enviar solicitud
+        </button>
+    </div>
+</form>
                                 </div>
                             </div>
                         </div>
