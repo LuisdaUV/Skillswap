@@ -262,7 +262,101 @@
     outline-offset: 3px;
 }
 
+.ss-app {
+    grid-template-columns: 240px minmax(0, 1fr) !important;
+    max-width: 1280px !important;
+    margin-inline: auto;
+    gap: 24px !important;
+    padding: 24px !important;
+}
+
+.ss-sidebar {
+    gap: 8px;
+}
+
+.ss-sidebar .ss-user-card {
+    margin-bottom: 8px;
+}
+
+.ss-sidebar .ss-nav-item {
+    min-height: 44px;
+    padding: 10px 12px;
+}
+
+.ss-center {
+    min-width: 0;
+    gap: 20px;
+}
+
+.ss-hero {
+    padding: clamp(20px, 3vw, 32px);
+}
+
+.ss-hero .ss-search {
+    min-height: 52px;
+    margin-top: 16px;
+}
+
+.ss-home-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+}
+
+.ss-home-action {
+    min-height: 108px;
+    align-content: center;
+}
+
+.ss-skills-card {
+    padding: clamp(16px, 2vw, 24px);
+}
+
+.ss-skill-item {
+    min-height: 52px;
+}
+
+.ss-sidebar .ss-nav-item:focus-visible,
+.ss-search:focus-visible,
+.ss-home-action:focus-visible,
+.ss-section-label a:focus-visible {
+    outline: 2px solid var(--blue-accent);
+    outline-offset: 3px;
+}
+
+.ss-hero .ss-search:focus-visible {
+    outline-color: var(--yellow-gold);
+}
+
+@media (max-width: 900px) {
+    .ss-app {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 16px !important;
+        padding: 12px !important;
+    }
+
+    .ss-center {
+        grid-row: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .ss-home-actions {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.ss-dashboard-background {
+    min-height: 100vh;
+    background-color: var(--navy-dark);
+    background-image: url("{{ asset('images/galaxia-dashboard.png') }}");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
     </style>
+
+    <div class="ss-dashboard-background">
 
     <div class="ss-app">
 
@@ -283,7 +377,7 @@
             </div>
 
             <a href="{{ url('/dashboard') }}" class="ss-nav-item active">
-                <i class="ti ti-layout-dashboard"></i> Dashboard
+                <i class="ti ti-layout-dashboard"></i> Inicio de menú
             </a>
 
             <a href="{{ route('profile.edit') }}" class="ss-nav-item">
@@ -319,15 +413,7 @@
     </a>
 @endcan
 
-            <span class="ss-nav-item ss-nav-item-disabled">
-                <i class="ti ti-chart-bar"></i> Estadísticas
-                <span class="ss-badge-soon">pronto</span>
-            </span>
-
-            <span class="ss-nav-item ss-nav-item-disabled">
-                <i class="ti ti-heart"></i> Favoritos
-                <span class="ss-badge-soon">pronto</span>
-            </span>
+           
 
             <hr class="ss-nav-divider">
 
@@ -369,7 +455,6 @@
 
             <div class="ss-hero">
                 <p class="ss-hero-greeting">¡Hola, {{ Auth::user()->name }}!</p>
-                <p class="ss-hero-sub">Buen día para aprender e intercambiar conocimiento</p>
                 <a href="{{ route('search.index') }}" class="ss-search">
                     <i class="ti ti-search"></i>
                     <span>Buscar habilidades...</span>
@@ -416,50 +501,10 @@
         </section>
 
         {{-- ── COLUMNA DERECHA ── --}}
-        <aside class="ss-right">
-
-            <div class="ss-stats-card">
-                <p class="ss-stats-title">Estadísticas</p>
-                <p class="ss-stats-sub">Esta semana</p>
-                <div class="ss-tabs">
-                    <button class="ss-tab">Día</button>
-                    <button class="ss-tab active">Semana</button>
-                    <button class="ss-tab">Mes</button>
-                </div>
-                <div class="ss-bars">
-                    @foreach(['L'=>40,'M'=>60,'X'=>50,'J'=>80,'V'=>90,'S'=>70,'D'=>55] as $day => $h)
-                        <div class="ss-bar-wrap">
-                            <div class="ss-bar {{ $h >= 70 ? 'on' : '' }}" @style(['height' => $h . '%'])></div>
-                            <span class="ss-bar-day">{{ $day }}</span>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="ss-progress-card">
-                <div>
-                    <p style="font-size:12px;font-weight:800;margin:0 0 4px;text-transform:uppercase;">Progreso</p>
-                    <p style="font-size:12px;opacity:0.9;margin:0;">Habilidades activas</p>
-                </div>
-                <svg width="60" height="60" viewBox="0 0 70 70">
-                    <circle cx="35" cy="35" r="28" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="6"/>
-                    <circle cx="35" cy="35" r="28" fill="none" stroke="#FFC700" stroke-width="6"
-                        stroke-dasharray="176" stroke-dashoffset="70" stroke-linecap="round"
-                        transform="rotate(-90 35 35)"/>
-                    <text x="35" y="40" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">60%</text>
-                </svg>
-            </div>
-
-            <div class="ss-logros-card" style="display:flex;justify-content:space-between;align-items:center;">
-                <div>
-                    <p style="font-size:11px;font-weight:800;color:var(--text-muted);margin:0 0 4px;text-transform:uppercase;">Logros</p>
-                    <p style="font-size:24px;font-weight:800;color:var(--navy-dark);margin:0;">{{ Auth::user()->skills->count() * 3 }}+</p>
-                </div>
-                <i class="ti ti-trophy" style="font-size:28px;color:var(--yellow-gold)"></i>
-            </div>
-
-        </aside>
+       
 
     </div>
+
+    </div> {{-- Cierra ss-dashboard-background --}}
 
 </x-app-layout>
