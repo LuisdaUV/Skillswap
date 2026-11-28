@@ -15,66 +15,90 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
     Route::get('/dashboard', function () {
+    $userId = Auth::id();
+
+    $pendingRequestCount = Exchange::query()
+        ->where('receiver_id', $userId)
+        ->where('status', 'pendiente')
+        ->count();
+
+    $openSessionCount = Exchange::query()
+        ->where('status', 'aceptado')
+        ->where(function ($query) use ($userId) {
+            $query->where('sender_id', $userId)
+                ->orWhere('receiver_id', $userId);
+        })
+        ->count();
+
+    return view('dashboard', compact('pendingRequestCount', 'openSessionCount'));
+})->name('dashboard');
+
+    Route::get('/movimientos', function () {
         $userId = Auth::id();
 
-        $incomingRequests = Exchange::with(['sender', 'requestedSkill', 'offeredSkill'])
-            ->where('receiver_id', $userId)
-            ->where('status', 'pendiente')
-            ->get();
-
-        $pendingSessions = Exchange::with(['sender', 'receiver', 'requestedSkill', 'offeredSkill'])
-            ->where('status', 'aceptado')
-            ->where(function ($query) use ($userId) {
-                $query->where('sender_id', $userId)
-                    ->orWhere('receiver_id', $userId);
-            })
-            ->orderBy('meet_date')
-            ->orderBy('meet_time')
-            ->get();
-
-        $sessionHistory = Exchange::with(['sender', 'receiver', 'requestedSkill', 'offeredSkill'])
-            ->whereIn('status', ['completado', 'cancelado'])
-            ->where(function ($query) use ($userId) {
-                $query->where('sender_id', $userId)
-                    ->orWhere('receiver_id', $userId);
-            })
-            ->latest('updated_at')
-            ->get();
-
-        $sentRequests = Exchange::with(['receiver', 'requestedSkill', 'offeredSkill'])
-            ->where('sender_id', $userId)
-            ->latest('id')
-            ->get();    
-
-
         $creditMovements = DB::table('credit_transfers as transfer')
-    ->leftJoin('users as payer', 'payer.id', '=', 'transfer.payer_id')
-    ->leftJoin('users as recipient', 'recipient.id', '=', 'transfer.recipient_id')
-    ->where(function ($query) use ($userId) {
-        $query->where('transfer.payer_id', $userId)
-            ->orWhere('transfer.recipient_id', $userId);
-    })
-    ->select(
-        'transfer.exchange_id',
-        'transfer.payer_id',
-        'transfer.amount',
-        'transfer.created_at',
-        'payer.name as payer_name',
-        'recipient.name as recipient_name',
-    )
-    ->orderByDesc('transfer.id')
-    ->paginate(10, ['*'], 'movimientos')
-    ->fragment('mis-movimientos');
+            ->leftJoin('users as payer', 'payer.id', '=', 'transfer.payer_id')
+            ->leftJoin('users as recipient', 'recipient.id', '=', 'transfer.recipient_id')
+            ->where(function ($query) use ($userId) {
+                $query->where('transfer.payer_id', $userId)
+                    ->orWhere('transfer.recipient_id', $userId);
+            })
+            ->select(
+                'transfer.exchange_id',
+                'transfer.payer_id',
+                'transfer.amount',
+                'transfer.created_at',
+                'payer.name as payer_name',
+                'recipient.name as recipient_name',
+            )
+            ->orderByDesc('transfer.id')
+            ->paginate(10, ['*'], 'movimientos');
 
-        return view('dashboard', compact(
-            'incomingRequests',
-            'pendingSessions',
-            'sessionHistory',
-            'sentRequests',
-            'creditMovements'
-        ));
-    })->name('dashboard');
+        return view('credits.index', compact('creditMovements'));
+    })->name('credits.index');
+
+    Route::get('/solicitudes', function () {
+    $userId = Auth::id();
+
+    $incomingRequests = Exchange::with(['sender', 'requestedSkill', 'offeredSkill'])
+        ->where('receiver_id', $userId)
+        ->where('status', 'pendiente')
+        ->latest('id')
+        ->get();
+
+    $sentRequests = Exchange::with(['receiver', 'requestedSkill', 'offeredSkill'])
+        ->where('sender_id', $userId)
+        ->latest('id')
+        ->get();
+
+    return view('exchanges.requests', compact('incomingRequests', 'sentRequests'));
+})->name('exchanges.requests');
+
+Route::get('/sesiones', function () {
+    $userId = Auth::id();
+
+    $mySessions = Exchange::with(['sender', 'receiver', 'requestedSkill', 'offeredSkill'])
+        ->where(function ($query) use ($userId) {
+            $query->where('sender_id', $userId)
+                ->orWhere('receiver_id', $userId);
+        });
+
+    $pendingSessions = (clone $mySessions)
+        ->where('status', 'aceptado')
+        ->orderBy('meet_date')
+        ->orderBy('meet_time')
+        ->get();
+
+    $sessionHistory = (clone $mySessions)
+        ->whereIn('status', ['completado', 'cancelado'])
+        ->latest('updated_at')
+        ->get();
+
+    return view('exchanges.sessions', compact('pendingSessions', 'sessionHistory'));
+})->name('exchanges.sessions');
+
 });
 
 Route::middleware('auth')->group(function () {

@@ -225,6 +225,43 @@
             background: var(--blue-accent); border-radius: 12px; padding: 20px;
             display: flex; align-items: center; justify-content: space-between; color: #FFFFFF;
         }
+
+        .ss-home-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.ss-home-action {
+    display: grid;
+    gap: 6px;
+    padding: 20px;
+    border: 1px solid #CBD5E1;
+    border-radius: 12px;
+    background: #FFFFFF;
+    color: #002B49;
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.ss-home-action strong {
+    color: #005A9C;
+    font-size: 32px;
+    line-height: 1;
+}
+
+.ss-home-action:hover {
+    border-color: #005A9C;
+    background: #EBF3FA;
+}
+
+.ss-home-action:focus-visible {
+    outline: 3px solid #005A9C;
+    outline-offset: 3px;
+}
+
     </style>
 
     <div class="ss-app">
@@ -257,14 +294,22 @@
                 <i class="ti ti-books"></i> Mis habilidades
             </a>
 
-            <a href="#historial-sesiones" class="ss-nav-item">
-                <i class="ti ti-history" aria-hidden="true"></i>
-                Historial de sesiones
-            </a>
 
-            <a href="#mis-movimientos" class="ss-nav-item">
+            <a href="{{ route('exchanges.sessions') }}" class="ss-nav-item">
+                <i class="ti ti-calendar-event" aria-hidden="true"></i>
+                Sesiones
+            </a>    
+
+    
+
+            <a href="{{ route('credits.index') }}" class="ss-nav-item">
                 <i class="ti ti-coins" aria-hidden="true"></i>
                 Mis movimientos
+            </a>
+
+            <a href="{{ route('exchanges.requests') }}" class="ss-nav-item">
+            <i class="ti ti-send" aria-hidden="true"></i>
+                Solicitudes
             </a>
 
             @can('moderate-reports')
@@ -331,6 +376,19 @@
                 </a>
             </div>
 
+
+            <div class="ss-home-actions">
+                <a href="{{ route('exchanges.requests') }}" class="ss-home-action">
+                    <strong>{{ $pendingRequestCount }}</strong>
+                    Solicitudes por responder
+                </a>
+
+                <a href="{{ route('exchanges.sessions') }}" class="ss-home-action">
+                    <strong>{{ $openSessionCount }}</strong>
+                    Sesiones pendientes
+                </a>
+            </div>
+
             <div class="ss-skills-card">
                 <p class="ss-section-label">
                     <span><i class="ti ti-books" style="color:var(--blue-accent);"></i> Mis habilidades</span>
@@ -353,273 +411,7 @@
                 @endif
             </div>
 
-            {{-- Solicitudes Recibidas --}}
-            <div class="ss-req-container">
-                <div class="ss-req-header">
-                    <div style="background:var(--bg-app);width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;">
-                        <i class="ti ti-bell-ringing" style="color:var(--navy-dark);font-size:18px;"></i>
-                    </div>
-                    <p class="ss-req-title">Solicitudes de intercambio recibidas</p>
-                </div>
 
-    <div class="ss-req-container">
-        <div class="ss-req-header">
-            <i class="ti ti-calendar-event" aria-hidden="true"></i>
-            <p class="ss-req-title">Sesiones pendientes</p>
-        </div>
-
-        
-        @forelse ($pendingSessions as $session)
-            @php
-                $isSender = (int) $session->sender_id === (int) auth()->id();
-                $partner = $isSender ? $session->receiver : $session->sender;
-                $learnSkill = $isSender ? $session->requestedSkill : $session->offeredSkill;
-                $teachSkill = $isSender ? $session->offeredSkill : $session->requestedSkill;
-            @endphp
-
-        <div class="ss-req-card">
-            <p class="ss-req-title">
-                Sesión con {{ $partner?->name ?? 'Usuario no disponible' }}
-            </p>
-
-            <div class="ss-req-offer-box">
-                <p><strong>Aprenderás</strong> {{ $learnSkill?->name ?? 'Habilidad no disponible' }}</p>
-                <p><strong>Enseñarás</strong> {{ $teachSkill?->name ?? 'Habilidad no disponible' }}</p>
-
-                @if ($session->meet_date && $session->meet_time)
-                    <p>
-                        <strong>Fecha y hora</strong>
-                        {{ \Carbon\Carbon::parse($session->meet_date)->format('d/m/Y') }}
-                        a las {{ \Carbon\Carbon::parse($session->meet_time)->format('g:i a') }}
-                    </p>
-                @else
-                    <p>Fecha y hora por definir.</p>
-                @endif
-
-                @php
-    $alreadyConfirmed = $isSender
-        ? $session->sender_completed_at
-        : $session->receiver_completed_at;
-
-    $scheduledAt = ($session->meet_date && $session->meet_time)
-        ? \Illuminate\Support\Carbon::parse(
-            $session->meet_date . ' ' . $session->meet_time,
-            'America/Bogota'
-        )
-        : null;
-@endphp
-
-@if ($alreadyConfirmed)
-    <p>Ya confirmaste. Falta la confirmación de tu compañero.</p>
-@elseif (!$scheduledAt)
-    <p>La sesión aún no tiene fecha y hora acordadas.</p>
-@elseif ($scheduledAt->isFuture())
-    <p>
-        <strong>Aún no es la hora acordada.</strong>
-        Podrás confirmar tu asistencia a partir de las
-        {{ $scheduledAt->format('g:i a') }} del {{ $scheduledAt->format('d/m/Y') }}.
-    </p>
-@else
-    <form method="POST" action="{{ route('exchanges.confirm-completion', $session) }}">
-        @csrf
-        <button type="submit" class="ss-req-btn-accept">
-            Confirmar sesión realizada
-        </button>
-    </form>
-@endif
-
-<form method="POST"
-    action="{{ route('exchanges.cancel', $session) }}"
-    onsubmit="return window.confirm('¿Quieres cancelar esta sesión?');"
-    style="margin-top: 10px;">
-    @csrf
-
-    <button type="submit" class="ss-req-btn-reject">
-        Cancelar sesión
-    </button>
-</form>
-
-@include('partials.session-report-form', ['reportSession' => $session])
-
-
-
-            </div>
-        </div>
-    @empty
-        <p style="font-size:13px;color:var(--text-muted);margin:0;">
-            Aún no tienes sesiones pendientes.
-        </p>
-    @endforelse
-</div>
-
-                @if(isset($incomingRequests) && $incomingRequests->count() > 0)
-                    @foreach($incomingRequests as $request)
-                        <div class="ss-req-card">
-                            <div class="ss-req-sender">
-                                <div class="ss-req-avatar">
-                                    {{ substr($request->sender->name, 0, 2) }}
-                                </div>
-                                <div>
-                                    <p style="font-size:14px;margin:0;font-weight:600;color:var(--navy-dark);">
-                                        {{ $request->sender->name }} te propone un trato
-                                    </p>
-                                    <p style="font-size:12px;color:var(--text-muted);margin:0;">
-                                        Código: {{ $request->sender->university_id }}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="ss-req-offer-box">
-                                <p>
-                                    Quiere aprender <strong>{{ $request->requestedSkill?->name ?? 'Habilidad no disponible' }}</strong>.
-
-                                     @if ($request->mode === 'creditos')
-                                        Te ofrece <strong>1 crédito</strong> por una sesión de una hora.
-                                    @else
-                                        Te ofrece enseñar <strong>{{ $request->offeredSkill?->name ?? 'Habilidad no disponible' }}</strong>
-                                        a cambio.
-                                    @endif
-                                </p>
-
-                                @if($request->meet_date && $request->meet_time)
-                                    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--text-muted);background:var(--bg-app);padding:8px 12px;border-radius:6px;">
-                                        <i class="ti ti-calendar-event" style="color:var(--blue-accent);font-size:16px;"></i>
-                                        <span>Propone el <strong>{{ \Carbon\Carbon::parse($request->meet_date)->format('d/m/Y') }}</strong> a las <strong>{{ \Carbon\Carbon::parse($request->meet_time)->format('h:i A') }}</strong></span>
-                                    </div>
-                                @endif
-                            </div>
-
-                            <div style="display:flex;gap:10px;">
-                                <form action="{{ route('exchanges.accept', $request->id) }}" method="POST" style="flex:1;">
-                                    @csrf
-                                    <button type="submit" class="ss-req-btn-accept">
-                                        <i class="ti ti-check"></i> Aceptar
-                                    </button>
-                                </form>
-                                <form action="{{ route('exchanges.reject', $request->id) }}" method="POST" style="flex:1;">
-                                    @csrf
-                                    <button type="submit" class="ss-req-btn-reject">
-                                        <i class="ti ti-x"></i> Rechazar
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    @endforeach
-                @else
-                    <p style="font-size:13px;color:var(--text-muted);margin:0;">No tienes solicitudes de intercambio pendientes.</p>
-                @endif
-            </div>
-
-
-            <div id="historial-sesiones" class="ss-req-container">
-    <div class="ss-req-header">
-        <i class="ti ti-history" aria-hidden="true"></i>
-        <h2 class="ss-req-title">Historial de sesiones</h2>
-    </div>
-
-    @forelse ($sessionHistory as $pastSession)
-        @php
-            $isSender = (int) $pastSession->sender_id === (int) auth()->id();
-            $partner = $isSender ? $pastSession->receiver : $pastSession->sender;
-            $learnedSkill = $isSender ? $pastSession->requestedSkill : $pastSession->offeredSkill;
-            $taughtSkill = $isSender ? $pastSession->offeredSkill : $pastSession->requestedSkill;
-        @endphp
-
-        <div class="ss-req-card">
-            <p class="ss-req-title">
-                Sesión con {{ $partner?->name ?? 'Usuario no disponible' }}
-            </p>
-
-            <div class="ss-req-offer-box">
-                <p><strong>Estado</strong>
-                    {{ $pastSession->status === 'completado' ? 'Completada' : 'Cancelada' }}
-                </p>
-                <p><strong>Habilidad para aprender</strong> {{ $learnedSkill?->name ?? 'No disponible' }}</p>
-                <p><strong>Habilidad para enseñar</strong> {{ $taughtSkill?->name ?? 'No disponible' }}</p>
-
-                @if ($pastSession->meet_date && $pastSession->meet_time)
-                    <p>
-                        <strong>Fecha acordada</strong>
-                        {{ \Illuminate\Support\Carbon::parse($pastSession->meet_date)->format('d/m/Y') }}
-                        a las {{ \Illuminate\Support\Carbon::parse($pastSession->meet_time)->format('g:i a') }}
-                    </p>
-                @endif
-                @include('partials.session-report-form', ['reportSession' => $pastSession])
-            </div>
-        </div>
-    @empty
-        <p>Aún no tienes sesiones completadas o canceladas.</p>
-    @endforelse
-</div>
-
-<div id="solicitudes-enviadas" class="ss-req-container">
-    <div class="ss-req-header">
-        <i class="ti ti-send" aria-hidden="true"></i>
-        <h2 class="ss-req-title">Solicitudes enviadas</h2>
-    </div>
-
-    @forelse ($sentRequests as $sentRequest)
-        <div class="ss-req-card">
-            <p class="ss-req-title">
-                Enviada a {{ $sentRequest->receiver?->name ?? 'Usuario no disponible' }}
-            </p>
-
-            <div class="ss-req-offer-box">
-                <p><strong>Quieres aprender</strong> {{ $sentRequest->requestedSkill?->name ?? 'No disponible' }}</p>
-                <p><strong>Ofreces enseñar</strong> {{ $sentRequest->offeredSkill?->name ?? 'No disponible' }}</p>
-                <p>
-                    <strong>Estado</strong>
-                    {{ match ($sentRequest->status) {
-                        'pendiente' => 'Pendiente de respuesta',
-                        'aceptado' => 'Aceptada',
-                        'rechazado' => 'Rechazada',
-                        'completado' => 'Completada',
-                        'cancelado' => 'Cancelada',
-                        default => 'Estado no disponible',
-                    } }}
-                </p>
-            </div>
-        </div>
-    @empty
-        <p>Aún no has enviado solicitudes de intercambio.</p>
-    @endforelse
-</div>
-
-    <div id="mis-movimientos" class="ss-req-container">
-    <div class="ss-req-header">
-        <i class="ti ti-coins" aria-hidden="true"></i>
-        <h2 class="ss-req-title">Mis movimientos</h2>
-    </div>
-
-    <p><strong>Saldo actual</strong> {{ auth()->user()->credits }}</p>
-
-    @forelse ($creditMovements as $movement)
-        @php
-            $spent = (int) $movement->payer_id === (int) auth()->id();
-            $partnerName = $spent ? $movement->recipient_name : $movement->payer_name;
-        @endphp
-
-        <div class="ss-req-card">
-            <p class="ss-req-title">
-                {{ $spent ? '−' : '+' }}{{ $movement->amount }}
-                {{ (int) $movement->amount === 1 ? 'crédito' : 'créditos' }}
-            </p>
-            <p>
-                {{ $spent ? 'Pagado a' : 'Recibido de' }}
-                {{ $partnerName ?? 'Cuenta eliminada' }}
-            </p>
-            <p>
-                {{ $movement->exchange_id ? 'Sesión #' . $movement->exchange_id : 'Sesión eliminada' }}
-                · {{ \Illuminate\Support\Carbon::parse($movement->created_at, config('app.timezone'))
-                    ->setTimezone('America/Bogota')->format('d/m/Y, g:i a') }}
-            </p>
-        </div>
-    @empty
-        <p>Aún no tienes movimientos de créditos.</p>
-    @endforelse
-
-    {{ $creditMovements->links() }}
-</div>
 
         </section>
 
